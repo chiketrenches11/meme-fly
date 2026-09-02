@@ -1,7 +1,7 @@
+```javascript
 // ============================================================
 // MEME FLY
-// Cada nível = uma skin/personagem diferente
-// Cada nível só desbloqueia depois de completar o anterior
+// WORLDS + SHOP + CLOSET + MISSIONS
 // ============================================================
 
 const canvas = document.getElementById("gameCanvas");
@@ -9,16 +9,26 @@ const ctx = canvas.getContext("2d");
 
 
 // ============================================================
-// ELEMENTOS HTML
+// HTML
 // ============================================================
 
 const menu = document.getElementById("menu");
 const levelsScreen = document.getElementById("levelsScreen");
+const shopScreen = document.getElementById("shopScreen");
+const closetScreen = document.getElementById("closetScreen");
+const missionsScreen = document.getElementById("missionsScreen");
 const game = document.getElementById("game");
 
 const playBtn = document.getElementById("playBtn");
 const levelsBtn = document.getElementById("levelsBtn");
+const shopBtn = document.getElementById("shopBtn");
+const closetBtn = document.getElementById("closetBtn");
+const missionsBtn = document.getElementById("missionsBtn");
+
 const backBtn = document.getElementById("backBtn");
+const shopBackBtn = document.getElementById("shopBackBtn");
+const closetBackBtn = document.getElementById("closetBackBtn");
+const missionsBackBtn = document.getElementById("missionsBackBtn");
 
 const retryBtn = document.getElementById("retryBtn");
 const menuBtn = document.getElementById("menuBtn");
@@ -40,7 +50,7 @@ const completeScore = document.getElementById("completeScore");
 
 
 // ============================================================
-// MUNDOS
+// WORLDS
 // ============================================================
 
 const worlds = [
@@ -48,143 +58,102 @@ const worlds = [
     {
         name: "PEPE",
         title: "PEPE SWAMP",
-
         skin: "pepe",
-
         sky1: "#8ee86b",
         sky2: "#2b9c50",
-
         ground: "#194d2a",
         obstacle: "#14552d",
         obstacleLight: "#2e8b45",
-
         accent: "#62ff70",
-
         gravity: 0.42,
         jump: -7.5,
         speed: 3.2,
         gap: 190,
-
         target: 8
     },
-
 
     {
         name: "SHIB",
         title: "SHIB CITY",
-
         skin: "shib",
-
         sky1: "#ff5b55",
         sky2: "#ffb58e",
-
         ground: "#641c29",
         obstacle: "#8d2031",
         obstacleLight: "#d33d4b",
-
         accent: "#fff0d0",
-
         gravity: 0.44,
         jump: -7.6,
         speed: 3.5,
         gap: 185,
-
         target: 10
     },
-
 
     {
         name: "DOGE",
         title: "DOGE SPACE",
-
         skin: "doge",
-
         sky1: "#101942",
         sky2: "#503d91",
-
         ground: "#101329",
         obstacle: "#27276b",
         obstacleLight: "#4848a5",
-
         accent: "#ffe044",
-
         gravity: 0.46,
         jump: -7.7,
         speed: 3.8,
         gap: 180,
-
         target: 12
     },
-
 
     {
         name: "TROLL",
         title: "TROLL INTERNET",
-
         skin: "troll",
-
         sky1: "#7124bd",
         sky2: "#0acb9b",
-
         ground: "#21102f",
         obstacle: "#42126d",
         obstacleLight: "#7c28a8",
-
         accent: "#50ffb5",
-
         gravity: 0.48,
         jump: -7.8,
         speed: 4.1,
         gap: 175,
-
         target: 14
     },
-
 
     {
         name: "67",
         title: "67 DIMENSION",
-
         skin: "sixtyseven",
-
         sky1: "#06152e",
         sky2: "#087da8",
-
         ground: "#06101e",
         obstacle: "#0a3155",
         obstacleLight: "#0b6388",
-
         accent: "#00eaff",
-
         gravity: 0.50,
         jump: -7.9,
         speed: 4.4,
         gap: 170,
-
         target: 16
     },
-
 
     {
         name: "WIF",
         title: "WIF UNIVERSE",
-
         skin: "wif",
-
         sky1: "#32105f",
         sky2: "#c84b88",
-
         ground: "#21102e",
         obstacle: "#4b174f",
         obstacleLight: "#9b337d",
-
         accent: "#ffcb55",
-
         gravity: 0.53,
         jump: -8.1,
         speed: 4.7,
         gap: 165,
-
         target: 20
     }
 
@@ -192,29 +161,285 @@ const worlds = [
 
 
 // ============================================================
-// PROGRESSO
+// SHOP ITEMS
 // ============================================================
 
-// IMPORTANTE:
-// Só o nível 1 começa desbloqueado.
+const accessories = [
+
+    {
+        id: "sunglasses",
+        name: "SUNGLASSES",
+        icon: "🕶️",
+        price: 100,
+        type: "face"
+    },
+
+    {
+        id: "crown",
+        name: "GOLD CROWN",
+        icon: "👑",
+        price: 250,
+        type: "head"
+    },
+
+    {
+        id: "tophat",
+        name: "TOP HAT",
+        icon: "🎩",
+        price: 400,
+        type: "head"
+    },
+
+    {
+        id: "chain",
+        name: "DIAMOND CHAIN",
+        icon: "💎",
+        price: 600,
+        type: "body"
+    },
+
+    {
+        id: "fire",
+        name: "FIRE AURA",
+        icon: "🔥",
+        price: 800,
+        type: "trail"
+    },
+
+    {
+        id: "lightning",
+        name: "LIGHTNING TRAIL",
+        icon: "⚡",
+        price: 1000,
+        type: "trail"
+    },
+
+    {
+        id: "rainbow",
+        name: "RAINBOW TRAIL",
+        icon: "🌈",
+        price: 1500,
+        type: "trail"
+    },
+
+    {
+        id: "money",
+        name: "MONEY TRAIL",
+        icon: "💰",
+        price: 1800,
+        type: "trail"
+    },
+
+    {
+        id: "diamondAura",
+        name: "DIAMOND AURA",
+        icon: "💎",
+        price: 2200,
+        type: "aura"
+    },
+
+    {
+        id: "goldGlasses",
+        name: "GOLD GLASSES",
+        icon: "😎",
+        price: 3000,
+        type: "face"
+    }
+
+];
+
+
+// ============================================================
+// MISSION DATA
+// ============================================================
+
+const missions = [
+
+    {
+        id: "coins25",
+        icon: "🪙",
+        name: "COIN COLLECTOR",
+        description: "Collect 25 coins",
+        target: 25,
+        rewardCoins: 100,
+        rewardItem: null
+    },
+
+    {
+        id: "coins100",
+        icon: "💰",
+        name: "COIN MASTER",
+        description: "Collect 100 coins",
+        target: 100,
+        rewardCoins: 300,
+        rewardItem: "chain"
+    },
+
+    {
+        id: "pepe",
+        icon: "🐸",
+        name: "PEPE CHAMPION",
+        description: "Complete the PEPE world",
+        target: 1,
+        rewardCoins: 100,
+        rewardItem: "crown"
+    },
+
+    {
+        id: "score20",
+        icon: "⭐",
+        name: "HIGH FLYER",
+        description: "Reach a score of 20",
+        target: 20,
+        rewardCoins: 150,
+        rewardItem: "sunglasses"
+    },
+
+    {
+        id: "worlds3",
+        icon: "🏆",
+        name: "WORLD EXPLORER",
+        description: "Complete 3 worlds",
+        target: 3,
+        rewardCoins: 300,
+        rewardItem: "fire"
+    },
+
+    {
+        id: "score50",
+        icon: "🔥",
+        name: "MEME LEGEND",
+        description: "Reach a score of 50",
+        target: 50,
+        rewardCoins: 500,
+        rewardItem: "lightning"
+    },
+
+    {
+        id: "coins250",
+        icon: "🪙",
+        name: "TREASURE HUNTER",
+        description: "Collect 250 coins",
+        target: 250,
+        rewardCoins: 750,
+        rewardItem: "diamondAura"
+    },
+
+    {
+        id: "allworlds",
+        icon: "👑",
+        name: "MEME FLY LEGEND",
+        description: "Complete every world",
+        target: worlds.length,
+        rewardCoins: 2000,
+        rewardItem: "rainbow"
+    }
+
+];
+
+
+// ============================================================
+// SAVE DATA
+// ============================================================
 
 let unlockedLevel =
     Number(localStorage.getItem("memeFlyUnlocked")) || 1;
-
-if (unlockedLevel < 1) {
-    unlockedLevel = 1;
-}
-
-if (unlockedLevel > worlds.length) {
-    unlockedLevel = worlds.length;
-}
-
 
 let bestScore =
     Number(localStorage.getItem("memeFlyBest")) || 0;
 
 let totalCoins =
     Number(localStorage.getItem("memeFlyCoins")) || 0;
+
+let purchasedAccessories =
+    JSON.parse(
+        localStorage.getItem("memeFlyAccessories") || "[]"
+    );
+
+let equippedAccessories =
+    JSON.parse(
+        localStorage.getItem("memeFlyEquipped") || "{}"
+    );
+
+let claimedMissions =
+    JSON.parse(
+        localStorage.getItem("memeFlyMissions") || "[]"
+    );
+
+let totalCoinsCollected =
+    Number(
+        localStorage.getItem("memeFlyTotalCollected")
+    ) || 0;
+
+let completedWorlds =
+    Number(
+        localStorage.getItem("memeFlyCompletedWorlds")
+    ) || 0;
+
+let highestScore =
+    Number(
+        localStorage.getItem("memeFlyHighestScore")
+    ) || 0;
+
+
+if (unlockedLevel < 1)
+    unlockedLevel = 1;
+
+if (unlockedLevel > worlds.length)
+    unlockedLevel = worlds.length;
+
+
+// ============================================================
+// SAVE
+// ============================================================
+
+function saveData() {
+
+    localStorage.setItem(
+        "memeFlyUnlocked",
+        unlockedLevel
+    );
+
+    localStorage.setItem(
+        "memeFlyBest",
+        bestScore
+    );
+
+    localStorage.setItem(
+        "memeFlyCoins",
+        totalCoins
+    );
+
+    localStorage.setItem(
+        "memeFlyAccessories",
+        JSON.stringify(purchasedAccessories)
+    );
+
+    localStorage.setItem(
+        "memeFlyEquipped",
+        JSON.stringify(equippedAccessories)
+    );
+
+    localStorage.setItem(
+        "memeFlyMissions",
+        JSON.stringify(claimedMissions)
+    );
+
+    localStorage.setItem(
+        "memeFlyTotalCollected",
+        totalCoinsCollected
+    );
+
+    localStorage.setItem(
+        "memeFlyCompletedWorlds",
+        completedWorlds
+    );
+
+    localStorage.setItem(
+        "memeFlyHighestScore",
+        highestScore
+    );
+}
 
 
 // ============================================================
@@ -242,11 +467,10 @@ window.addEventListener(
 
 
 // ============================================================
-// VARIÁVEIS DO JOGO
+// GAME VARIABLES
 // ============================================================
 
 let currentLevel = 1;
-
 let player = null;
 
 let pipes = [];
@@ -260,12 +484,11 @@ let gameRunning = false;
 let gameFinished = false;
 
 let lastPipeTime = 0;
-
 let animationFrame = null;
 
 
 // ============================================================
-// ATUALIZAR MENU
+// MENU
 // ============================================================
 
 function updateMenuStats() {
@@ -281,18 +504,15 @@ updateMenuStats();
 
 
 // ============================================================
-// MENU DE NÍVEIS
+// LEVELS
 // ============================================================
 
 function createLevels() {
 
     const container =
-        document.getElementById(
-            "levelContainer"
-        );
+        document.getElementById("levelContainer");
 
     container.innerHTML = "";
-
 
     worlds.forEach(
         (world, index) => {
@@ -301,105 +521,50 @@ function createLevels() {
                 index + 1;
 
             const button =
-                document.createElement(
-                    "button"
-                );
+                document.createElement("button");
 
-            button.className =
-                "level";
-
-
-            // --------------------------------------------
-            // NÍVEL BLOQUEADO
-            // --------------------------------------------
+            button.className = "level";
 
             if (
                 levelNumber >
                 unlockedLevel
             ) {
 
-                button.classList.add(
-                    "locked"
-                );
+                button.classList.add("locked");
 
                 button.innerHTML = `
-
-                    <div
-                        class="number"
-                        style="font-size:42px"
-                    >
-                        🔒
-                    </div>
-
-                    <div class="name">
-                        LOCKED
-                    </div>
-
+                    <div style="font-size:42px">🔒</div>
+                    <div class="name">LOCKED</div>
                 `;
 
                 button.disabled = true;
-            }
 
-
-            // --------------------------------------------
-            // NÍVEL DESBLOQUEADO
-            // --------------------------------------------
-
-            else {
+            } else {
 
                 button.innerHTML = `
-
-                    <div
-                        class="number"
-                        style="
-                            font-size:42px;
-                            line-height:1;
-                        "
-                    >
+                    <div style="font-size:42px">
                         ${worldIcon(world)}
                     </div>
 
-                    <div
-                        class="number"
-                        style="
-                            font-size:22px;
-                            margin-top:4px;
-                        "
-                    >
+                    <div style="font-size:22px">
                         ${levelNumber}
                     </div>
 
                     <div class="name">
                         ${world.name}
                     </div>
-
                 `;
-
 
                 button.addEventListener(
                     "click",
-                    () => {
-
-                        startGame(
-                            levelNumber
-                        );
-
-                    }
+                    () => startGame(levelNumber)
                 );
             }
 
-
-            container.appendChild(
-                button
-            );
+            container.appendChild(button);
         }
     );
 }
-
-
-// ============================================================
-// ÍCONES DOS MUNDOS
-// ============================================================
 
 function worldIcon(world) {
 
@@ -424,140 +589,785 @@ function worldIcon(world) {
     return "🚀";
 }
 
-
 createLevels();
 
 
 // ============================================================
-// ECRÃS
+// SCREEN MANAGEMENT
 // ============================================================
 
-function showMenu() {
+function hideAllScreens() {
+
+    menu.classList.add("hidden");
+    levelsScreen.classList.add("hidden");
+    shopScreen.classList.add("hidden");
+    closetScreen.classList.add("hidden");
+    missionsScreen.classList.add("hidden");
+    game.classList.add("hidden");
+}
+
+function stopGame() {
 
     gameRunning = false;
 
     cancelAnimationFrame(
         animationFrame
     );
+}
 
-    menu.classList.remove(
-        "hidden"
-    );
+function showMenu() {
 
-    levelsScreen.classList.add(
-        "hidden"
-    );
+    stopGame();
+    hideAllScreens();
 
-    game.classList.add(
-        "hidden"
-    );
+    menu.classList.remove("hidden");
 
-    gameOver.classList.add(
-        "hidden"
-    );
-
-    levelComplete.classList.add(
-        "hidden"
-    );
+    gameOver.classList.add("hidden");
+    levelComplete.classList.add("hidden");
 
     updateMenuStats();
 }
 
-
 function showLevels() {
 
-    gameRunning = false;
+    stopGame();
+    hideAllScreens();
 
-    cancelAnimationFrame(
-        animationFrame
-    );
+    levelsScreen.classList.remove("hidden");
 
-    menu.classList.add(
-        "hidden"
-    );
-
-    levelsScreen.classList.remove(
-        "hidden"
-    );
-
-    game.classList.add(
-        "hidden"
-    );
-
-    gameOver.classList.add(
-        "hidden"
-    );
-
-    levelComplete.classList.add(
-        "hidden"
-    );
+    gameOver.classList.add("hidden");
+    levelComplete.classList.add("hidden");
 
     createLevels();
 }
 
+function showShop() {
+
+    stopGame();
+    hideAllScreens();
+
+    shopScreen.classList.remove("hidden");
+
+    renderShop();
+}
+
+function showCloset() {
+
+    stopGame();
+    hideAllScreens();
+
+    closetScreen.classList.remove("hidden");
+
+    renderCloset();
+}
+
+function showMissions() {
+
+    stopGame();
+    hideAllScreens();
+
+    missionsScreen.classList.remove("hidden");
+
+    renderMissions();
+}
+
 
 // ============================================================
-// BOTÕES
+// BUTTONS
 // ============================================================
 
 playBtn.addEventListener(
     "click",
-    () => {
-
-        startGame(
-            unlockedLevel
-        );
-
-    }
+    () => startGame(unlockedLevel)
 );
-
 
 levelsBtn.addEventListener(
     "click",
     showLevels
 );
 
+shopBtn.addEventListener(
+    "click",
+    showShop
+);
+
+closetBtn.addEventListener(
+    "click",
+    showCloset
+);
+
+missionsBtn.addEventListener(
+    "click",
+    showMissions
+);
 
 backBtn.addEventListener(
     "click",
     showMenu
 );
 
+shopBackBtn.addEventListener(
+    "click",
+    showMenu
+);
+
+closetBackBtn.addEventListener(
+    "click",
+    showMenu
+);
+
+missionsBackBtn.addEventListener(
+    "click",
+    showMenu
+);
 
 menuBtn.addEventListener(
     "click",
     showMenu
 );
 
-
 levelsBtn2.addEventListener(
     "click",
     showLevels
 );
 
-
 retryBtn.addEventListener(
     "click",
-    () => {
-
-        startGame(
-            currentLevel
-        );
-
-    }
+    () => startGame(currentLevel)
 );
 
 
 // ============================================================
-// COMEÇAR JOGO
+// SHOP
+// ============================================================
+
+function renderShop() {
+
+    const container =
+        document.getElementById("shopContainer");
+
+    const balance =
+        document.getElementById("shopCoins");
+
+    balance.textContent =
+        totalCoins;
+
+    container.innerHTML = "";
+
+    accessories.forEach(
+        item => {
+
+            const owned =
+                purchasedAccessories.includes(
+                    item.id
+                );
+
+            const div =
+                document.createElement("div");
+
+            div.className =
+                "shopItem" +
+                (owned ? " owned" : "");
+
+            div.innerHTML = `
+                <div class="shopIcon">
+                    ${item.icon}
+                </div>
+
+                <h3>
+                    ${item.name}
+                </h3>
+
+                <p>
+                    ${item.type.toUpperCase()}
+                </p>
+
+                ${
+                    owned
+                    ? `
+                        <button disabled>
+                            ✓ OWNED
+                        </button>
+                    `
+                    : `
+                        <div class="shopPrice">
+                            🪙 ${item.price}
+                        </div>
+
+                        <br>
+
+                        <button
+                            onclick="buyAccessory('${item.id}')"
+                        >
+                            BUY
+                        </button>
+                    `
+                }
+            `;
+
+            container.appendChild(div);
+        }
+    );
+}
+
+
+// ============================================================
+// BUY ACCESSORY
+// ============================================================
+
+function buyAccessory(id) {
+
+    const item =
+        accessories.find(
+            accessory =>
+                accessory.id === id
+        );
+
+    if (!item)
+        return;
+
+    if (
+        purchasedAccessories.includes(
+            id
+        )
+    )
+        return;
+
+    if (
+        totalCoins <
+        item.price
+    ) {
+
+        alert(
+            "You don't have enough coins! 🪙"
+        );
+
+        return;
+    }
+
+    totalCoins -=
+        item.price;
+
+    purchasedAccessories.push(
+        id
+    );
+
+    saveData();
+
+    updateMenuStats();
+
+    renderShop();
+}
+
+
+// ============================================================
+// CLOSET
+// ============================================================
+
+let selectedClosetMeme = 1;
+
+function renderCloset() {
+
+    const memeContainer =
+        document.getElementById(
+            "closetMemes"
+        );
+
+    const accessoryContainer =
+        document.getElementById(
+            "closetAccessories"
+        );
+
+    memeContainer.innerHTML = "";
+    accessoryContainer.innerHTML = "";
+
+    // -----------------------------
+    // MEMES
+    // -----------------------------
+
+    worlds.forEach(
+        (world, index) => {
+
+            const level =
+                index + 1;
+
+            const button =
+                document.createElement("button");
+
+            const unlocked =
+                level <= unlockedLevel;
+
+            button.className =
+                "closetMeme";
+
+            if (!unlocked)
+                button.classList.add("locked");
+
+            if (
+                selectedClosetMeme ===
+                level
+            )
+                button.classList.add("selected");
+
+            button.innerHTML =
+                unlocked
+                    ? `${worldIcon(world)} ${world.name}`
+                    : `🔒 ${world.name}`;
+
+            if (unlocked) {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        selectedClosetMeme =
+                            level;
+
+                        renderCloset();
+                    }
+                );
+            }
+
+            memeContainer.appendChild(
+                button
+            );
+        }
+    );
+
+
+    // -----------------------------
+    // ACCESSORIES
+    // -----------------------------
+
+    const noneButton =
+        document.createElement("button");
+
+    noneButton.className =
+        "closetAccessory";
+
+    noneButton.textContent =
+        "❌ NONE";
+
+    accessoryContainer.appendChild(
+        noneButton
+    );
+
+
+    accessories.forEach(
+        item => {
+
+            const owned =
+                purchasedAccessories.includes(
+                    item.id
+                );
+
+            const button =
+                document.createElement("button");
+
+            button.className =
+                "closetAccessory";
+
+            if (!owned)
+                button.classList.add("locked");
+
+            if (
+                equippedAccessories[item.type] ===
+                item.id
+            ) {
+
+                button.classList.add(
+                    "equipped"
+                );
+            }
+
+            button.innerHTML =
+                owned
+                    ? `${item.icon} ${item.name}`
+                    : `🔒 ${item.name}`;
+
+
+            if (owned) {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        if (
+                            equippedAccessories[
+                                item.type
+                            ] === item.id
+                        ) {
+
+                            delete equippedAccessories[
+                                item.type
+                            ];
+
+                        } else {
+
+                            equippedAccessories[
+                                item.type
+                            ] = item.id;
+                        }
+
+                        saveData();
+
+                        renderCloset();
+                    }
+                );
+            }
+
+            accessoryContainer.appendChild(
+                button
+            );
+        }
+    );
+
+    drawClosetPreview();
+}
+
+
+// ============================================================
+// CLOSET PREVIEW
+// ============================================================
+
+function drawClosetPreview() {
+
+    const closetCanvas =
+        document.getElementById(
+            "closetCanvas"
+        );
+
+    if (!closetCanvas)
+        return;
+
+    const c =
+        closetCanvas.getContext("2d");
+
+    c.clearRect(
+        0,
+        0,
+        closetCanvas.width,
+        closetCanvas.height
+    );
+
+    c.save();
+
+    c.translate(
+        150,
+        150
+    );
+
+    c.scale(
+        2.2,
+        2.2
+    );
+
+    const world =
+        worlds[
+            selectedClosetMeme - 1
+        ];
+
+    if (world.skin === "pepe")
+        drawPepe();
+
+    if (world.skin === "shib")
+        drawShib();
+
+    if (world.skin === "doge")
+        drawDoge();
+
+    if (world.skin === "troll")
+        drawTroll();
+
+    if (world.skin === "sixtyseven")
+        draw67();
+
+    if (world.skin === "wif")
+        drawWif();
+
+    drawAccessories(
+        c,
+        equippedAccessories
+    );
+
+    c.restore();
+
+    const equipped =
+        Object.keys(
+            equippedAccessories
+        );
+
+    const info =
+        document.getElementById(
+            "equippedInfo"
+        );
+
+    info.textContent =
+        equipped.length
+            ? equipped
+                .map(
+                    type =>
+                        accessories.find(
+                            item =>
+                                item.id ===
+                                equippedAccessories[type]
+                        )?.name
+                )
+                .join(" • ")
+            : "NO ACCESSORIES";
+}
+
+
+// ============================================================
+// MISSIONS
+// ============================================================
+
+function getMissionProgress(mission) {
+
+    if (
+        mission.id ===
+        "coins25"
+    )
+        return totalCoinsCollected;
+
+    if (
+        mission.id ===
+        "coins100"
+    )
+        return totalCoinsCollected;
+
+    if (
+        mission.id ===
+        "coins250"
+    )
+        return totalCoinsCollected;
+
+    if (
+        mission.id ===
+        "pepe"
+    )
+        return unlockedLevel >= 2
+            ? 1
+            : 0;
+
+    if (
+        mission.id ===
+        "score20"
+    )
+        return highestScore;
+
+    if (
+        mission.id ===
+        "score50"
+    )
+        return highestScore;
+
+    if (
+        mission.id ===
+        "worlds3"
+    )
+        return completedWorlds;
+
+    if (
+        mission.id ===
+        "allworlds"
+    )
+        return completedWorlds;
+
+    return 0;
+}
+
+
+function renderMissions() {
+
+    const container =
+        document.getElementById(
+            "missionsContainer"
+        );
+
+    container.innerHTML = "";
+
+    missions.forEach(
+        mission => {
+
+            const progress =
+                Math.min(
+                    getMissionProgress(mission),
+                    mission.target
+                );
+
+            const percentage =
+                Math.min(
+                    progress /
+                        mission.target *
+                        100,
+                    100
+                );
+
+            const claimed =
+                claimedMissions.includes(
+                    mission.id
+                );
+
+            const completed =
+                progress >=
+                mission.target;
+
+            const rewardItem =
+                mission.rewardItem
+                    ? accessories.find(
+                        item =>
+                            item.id ===
+                            mission.rewardItem
+                    )
+                    : null;
+
+            const div =
+                document.createElement("div");
+
+            div.className =
+                "mission" +
+                (completed
+                    ? " completed"
+                    : "") +
+                (claimed
+                    ? " claimed"
+                    : "");
+
+            div.innerHTML = `
+
+                <div class="missionIcon">
+                    ${mission.icon}
+                </div>
+
+                <div class="missionInfo">
+
+                    <h3>
+                        ${mission.name}
+                    </h3>
+
+                    <p>
+                        ${mission.description}
+                    </p>
+
+                    <div class="progressBar">
+
+                        <div
+                            class="progressFill"
+                            style="width:${percentage}%"
+                        ></div>
+
+                    </div>
+
+                    <small>
+                        ${progress} / ${mission.target}
+                    </small>
+
+                </div>
+
+                <div class="missionReward">
+
+                    <div class="rewardItem">
+                        🪙 +${mission.rewardCoins}
+                    </div>
+
+                    ${
+                        rewardItem
+                        ? `
+                            <div class="rewardItem">
+                                ${rewardItem.icon}
+                                ${rewardItem.name}
+                            </div>
+                        `
+                        : ""
+                    }
+
+                    <button
+                        class="claimBtn"
+                        ${
+                            !completed ||
+                            claimed
+                                ? "disabled"
+                                : ""
+                        }
+                        onclick="claimMission('${mission.id}')"
+                    >
+                        ${
+                            claimed
+                                ? "✓ CLAIMED"
+                                : "CLAIM"
+                        }
+                    </button>
+
+                </div>
+            `;
+
+            container.appendChild(
+                div
+            );
+        }
+    );
+}
+
+
+// ============================================================
+// CLAIM MISSION
+// ============================================================
+
+function claimMission(id) {
+
+    if (
+        claimedMissions.includes(id)
+    )
+        return;
+
+    const mission =
+        missions.find(
+            item =>
+                item.id === id
+        );
+
+    if (!mission)
+        return;
+
+    if (
+        getMissionProgress(mission) <
+        mission.target
+    )
+        return;
+
+    claimedMissions.push(
+        id
+    );
+
+    totalCoins +=
+        mission.rewardCoins;
+
+    if (
+        mission.rewardItem &&
+        !purchasedAccessories.includes(
+            mission.rewardItem
+        )
+    ) {
+
+        purchasedAccessories.push(
+            mission.rewardItem
+        );
+    }
+
+    saveData();
+
+    updateMenuStats();
+
+    renderMissions();
+}
+
+
+// ============================================================
+// START GAME
 // ============================================================
 
 function startGame(levelNumber) {
-
-    // --------------------------------------------
-    // SEGURANÇA
-    // Não deixa jogar níveis bloqueados.
-    // --------------------------------------------
 
     if (
         levelNumber >
@@ -568,45 +1378,29 @@ function startGame(levelNumber) {
             unlockedLevel;
     }
 
-
     currentLevel =
         levelNumber;
-
 
     const world =
         worlds[
             currentLevel - 1
         ];
 
-
     score = 0;
-
     collectedCoins = 0;
 
     pipes = [];
-
     coins = [];
-
     particles = [];
 
-
     gameRunning = true;
-
     gameFinished = false;
 
-
-    menu.classList.add(
-        "hidden"
-    );
-
-    levelsScreen.classList.add(
-        "hidden"
-    );
+    hideAllScreens();
 
     game.classList.remove(
         "hidden"
     );
-
 
     gameOver.classList.add(
         "hidden"
@@ -615,7 +1409,6 @@ function startGame(levelNumber) {
     levelComplete.classList.add(
         "hidden"
     );
-
 
     currentLevelText.textContent =
         currentLevel;
@@ -626,13 +1419,7 @@ function startGame(levelNumber) {
     gameCoinsText.textContent =
         collectedCoins;
 
-
     resizeCanvas();
-
-
-    // --------------------------------------------
-    // PERSONAGEM
-    // --------------------------------------------
 
     player = {
 
@@ -647,15 +1434,12 @@ function startGame(levelNumber) {
         rotation: 0
     };
 
-
     lastPipeTime =
         performance.now() - 900;
-
 
     cancelAnimationFrame(
         animationFrame
     );
-
 
     gameLoop();
 }
@@ -670,16 +1454,13 @@ function jump() {
     if (!gameRunning)
         return;
 
-
     const world =
         worlds[
             currentLevel - 1
         ];
 
-
     player.velocity =
         world.jump;
-
 
     createParticles(
         player.x - 15,
@@ -691,7 +1472,7 @@ function jump() {
 
 
 // ============================================================
-// CONTROLOS
+// CONTROLS
 // ============================================================
 
 document.addEventListener(
@@ -710,12 +1491,10 @@ document.addEventListener(
     }
 );
 
-
 canvas.addEventListener(
     "mousedown",
     jump
 );
-
 
 canvas.addEventListener(
     "touchstart",
@@ -733,7 +1512,7 @@ canvas.addEventListener(
 
 
 // ============================================================
-// CRIAR OBSTÁCULO
+// PIPE
 // ============================================================
 
 function createPipe() {
@@ -743,21 +1522,17 @@ function createPipe() {
             currentLevel - 1
         ];
 
-
     const minTop = 70;
-
 
     const maxTop =
         H -
         world.gap -
         120;
 
-
     const top =
         Math.random() *
         (maxTop - minTop) +
         minTop;
-
 
     pipes.push({
 
@@ -773,9 +1548,6 @@ function createPipe() {
 
         passed: false
     });
-
-
-    // Moeda no meio do obstáculo
 
     coins.push({
 
@@ -803,23 +1575,16 @@ function update() {
     if (!gameRunning)
         return;
 
-
     const world =
         worlds[
             currentLevel - 1
         ];
-
-
-    // --------------------------------------------
-    // GRAVIDADE
-    // --------------------------------------------
 
     player.velocity +=
         world.gravity;
 
     player.y +=
         player.velocity;
-
 
     player.rotation =
         Math.max(
@@ -830,10 +1595,6 @@ function update() {
             )
         );
 
-
-    // --------------------------------------------
-    // CRIAR OBSTÁCULOS
-    // --------------------------------------------
 
     if (
         performance.now() -
@@ -848,16 +1609,11 @@ function update() {
     }
 
 
-    // --------------------------------------------
-    // MOVER OBSTÁCULOS
-    // --------------------------------------------
-
     pipes.forEach(
         pipe => {
 
             pipe.x -=
                 world.speed;
-
 
             if (
                 !pipe.passed &&
@@ -871,10 +1627,22 @@ function update() {
 
                 score++;
 
-
                 scoreText.textContent =
                     score;
 
+                if (
+                    score >
+                    highestScore
+                ) {
+
+                    highestScore =
+                        score;
+
+                    localStorage.setItem(
+                        "memeFlyHighestScore",
+                        highestScore
+                    );
+                }
 
                 createParticles(
                     player.x,
@@ -883,34 +1651,23 @@ function update() {
                     12
                 );
 
-
-                // --------------------------------
-                // TERMINOU O NÍVEL
-                // --------------------------------
-
                 if (
                     score >=
                     world.target
                 ) {
 
                     completeLevel();
-
                 }
             }
         }
     );
 
 
-    // --------------------------------------------
-    // MOEDAS
-    // --------------------------------------------
-
     coins.forEach(
         coin => {
 
             coin.x -=
                 world.speed;
-
 
             if (
                 !coin.collected &&
@@ -919,32 +1676,33 @@ function update() {
                     player.y,
                     coin.x,
                     coin.y
-                ) <
-                    35
+                ) < 35
             ) {
 
                 coin.collected =
                     true;
 
-
                 collectedCoins++;
 
                 totalCoins++;
 
+                totalCoinsCollected++;
 
                 gameCoinsText.textContent =
                     collectedCoins;
 
-
                 coinsText.textContent =
                     totalCoins;
-
 
                 localStorage.setItem(
                     "memeFlyCoins",
                     totalCoins
                 );
 
+                localStorage.setItem(
+                    "memeFlyTotalCollected",
+                    totalCoinsCollected
+                );
 
                 createParticles(
                     coin.x,
@@ -956,10 +1714,6 @@ function update() {
         }
     );
 
-
-    // --------------------------------------------
-    // PARTÍCULAS
-    // --------------------------------------------
 
     particles.forEach(
         particle => {
@@ -978,17 +1732,12 @@ function update() {
         }
     );
 
-
     particles =
         particles.filter(
             particle =>
                 particle.life > 0
         );
 
-
-    // --------------------------------------------
-    // REMOVER OBJETOS
-    // --------------------------------------------
 
     pipes =
         pipes.filter(
@@ -998,7 +1747,6 @@ function update() {
                 -100
         );
 
-
     coins =
         coins.filter(
             coin =>
@@ -1007,10 +1755,6 @@ function update() {
                 !coin.collected
         );
 
-
-    // --------------------------------------------
-    // PAREDES
-    // --------------------------------------------
 
     if (
         player.y -
@@ -1027,10 +1771,6 @@ function update() {
     }
 
 
-    // --------------------------------------------
-    // COLISÕES
-    // --------------------------------------------
-
     for (
         const pipe of pipes
     ) {
@@ -1044,7 +1784,6 @@ function update() {
                 pipe.x +
                     pipe.width;
 
-
         const vertical =
             player.y -
                 player.size / 2 <
@@ -1052,7 +1791,6 @@ function update() {
             player.y +
                 player.size / 2 >
                 pipe.bottom;
-
 
         if (
             horizontal &&
@@ -1068,7 +1806,7 @@ function update() {
 
 
 // ============================================================
-// DISTÂNCIA
+// DISTANCE
 // ============================================================
 
 function distance(
@@ -1092,7 +1830,7 @@ function distance(
 
 
 // ============================================================
-// PARTÍCULAS
+// PARTICLES
 // ============================================================
 
 function createParticles(
@@ -1146,7 +1884,6 @@ function drawBackground() {
             currentLevel - 1
         ];
 
-
     const gradient =
         ctx.createLinearGradient(
             0,
@@ -1155,22 +1892,18 @@ function drawBackground() {
             H
         );
 
-
     gradient.addColorStop(
         0,
         world.sky1
     );
-
 
     gradient.addColorStop(
         1,
         world.sky2
     );
 
-
     ctx.fillStyle =
         gradient;
-
 
     ctx.fillRect(
         0,
@@ -1180,42 +1913,23 @@ function drawBackground() {
     );
 
 
-    if (
-        currentLevel === 1
-    ) {
-
+    if (currentLevel === 1)
         drawPepeBackground();
 
-    } else if (
-        currentLevel === 2
-    ) {
-
+    if (currentLevel === 2)
         drawShibBackground();
 
-    } else if (
-        currentLevel === 3
-    ) {
-
+    if (currentLevel === 3)
         drawDogeBackground();
 
-    } else if (
-        currentLevel === 4
-    ) {
-
+    if (currentLevel === 4)
         drawTrollBackground();
 
-    } else if (
-        currentLevel === 5
-    ) {
-
+    if (currentLevel === 5)
         draw67Background();
 
-    } else if (
-        currentLevel === 6
-    ) {
-
+    if (currentLevel === 6)
         drawWifBackground();
-    }
 }
 
 
@@ -1224,8 +1938,6 @@ function drawBackground() {
 // ============================================================
 
 function drawPepeBackground() {
-
-    // Sol
 
     ctx.fillStyle =
         "rgba(255,240,100,0.65)";
@@ -1242,9 +1954,6 @@ function drawPepeBackground() {
 
     ctx.fill();
 
-
-    // Folhas
-
     for (
         let i = 0;
         i < 12;
@@ -1259,10 +1968,8 @@ function drawPepeBackground() {
             90 -
             (i % 3) * 35;
 
-
         ctx.fillStyle =
             "rgba(15,90,40,0.5)";
-
 
         ctx.beginPath();
 
@@ -1278,9 +1985,6 @@ function drawPepeBackground() {
 
         ctx.fill();
     }
-
-
-    // Água
 
     ctx.fillStyle =
         "rgba(20,120,120,0.25)";
@@ -1300,8 +2004,6 @@ function drawPepeBackground() {
 
 function drawShibBackground() {
 
-    // Sol vermelho
-
     ctx.fillStyle =
         "rgba(255,240,210,0.85)";
 
@@ -1317,9 +2019,6 @@ function drawShibBackground() {
 
     ctx.fill();
 
-
-    // Prédios
-
     for (
         let i = 0;
         i < 12;
@@ -1333,10 +2032,8 @@ function drawShibBackground() {
             100 +
             (i % 4) * 45;
 
-
         ctx.fillStyle =
             "rgba(90,15,35,0.45)";
-
 
         ctx.fillRect(
             x,
@@ -1345,12 +2042,8 @@ function drawShibBackground() {
             height
         );
 
-
-        // Janelas
-
         ctx.fillStyle =
             "rgba(255,220,130,0.5)";
-
 
         for (
             let y =
@@ -1380,12 +2073,8 @@ function drawShibBackground() {
         }
     }
 
-
-    // Lanternas
-
     ctx.fillStyle =
         "#ffd45b";
-
 
     for (
         let i = 0;
@@ -1411,16 +2100,13 @@ function drawShibBackground() {
 
 
 // ============================================================
-// DOGE SPACE
+// DOGE BACKGROUND
 // ============================================================
 
 function drawDogeBackground() {
 
-    // Estrelas
-
     ctx.fillStyle =
         "white";
-
 
     for (
         let i = 0;
@@ -1429,22 +2115,18 @@ function drawDogeBackground() {
     ) {
 
         const x =
-            (i * 137) %
-            W;
+            (i * 137) % W;
 
         const y =
-            (i * 83) %
-            H;
+            (i * 83) % H;
 
         const size =
             (i % 3) + 1;
-
 
         ctx.globalAlpha =
             0.4 +
             (i % 5) *
                 0.1;
-
 
         ctx.fillRect(
             x,
@@ -1454,11 +2136,7 @@ function drawDogeBackground() {
         );
     }
 
-
     ctx.globalAlpha = 1;
-
-
-    // Planeta
 
     ctx.fillStyle =
         "rgba(255,220,80,0.8)";
@@ -1474,9 +2152,6 @@ function drawDogeBackground() {
     );
 
     ctx.fill();
-
-
-    // Lua
 
     ctx.fillStyle =
         "rgba(190,190,255,0.7)";
@@ -1506,9 +2181,6 @@ function drawTrollBackground() {
 
     ctx.lineWidth = 2;
 
-
-    // Grid vertical
-
     for (
         let x = 0;
         x < W;
@@ -1529,9 +2201,6 @@ function drawTrollBackground() {
 
         ctx.stroke();
     }
-
-
-    // Grid horizontal
 
     for (
         let y = 0;
@@ -1554,9 +2223,6 @@ function drawTrollBackground() {
         ctx.stroke();
     }
 
-
-    // Glitches
-
     for (
         let i = 0;
         i < 15;
@@ -1567,7 +2233,6 @@ function drawTrollBackground() {
             i % 2 === 0
                 ? "rgba(255,50,220,0.3)"
                 : "rgba(0,255,180,0.3)";
-
 
         ctx.fillRect(
             Math.random() * W,
@@ -1591,15 +2256,11 @@ function draw67Background() {
 
     ctx.lineWidth = 2;
 
-
     const centerX =
         W / 2;
 
     const centerY =
         H / 2;
-
-
-    // Dimensões
 
     for (
         let i = 0;
@@ -1611,7 +2272,6 @@ function draw67Background() {
             i * 100 +
             80;
 
-
         ctx.strokeRect(
             centerX -
                 size / 2,
@@ -1622,12 +2282,8 @@ function draw67Background() {
         );
     }
 
-
-    // Linhas de velocidade
-
     ctx.strokeStyle =
         "rgba(0,220,255,0.15)";
-
 
     for (
         let i = 0;
@@ -1637,7 +2293,6 @@ function draw67Background() {
 
         const y =
             i * 70;
-
 
         ctx.beginPath();
 
@@ -1662,11 +2317,8 @@ function draw67Background() {
 
 function drawWifBackground() {
 
-    // Estrelas
-
     ctx.fillStyle =
         "rgba(255,255,255,0.8)";
-
 
     for (
         let i = 0;
@@ -1675,13 +2327,10 @@ function drawWifBackground() {
     ) {
 
         const x =
-            (i * 113) %
-            W;
+            (i * 113) % W;
 
         const y =
-            (i * 67) %
-            H;
-
+            (i * 67) % H;
 
         ctx.beginPath();
 
@@ -1695,9 +2344,6 @@ function drawWifBackground() {
 
         ctx.fill();
     }
-
-
-    // Luas/planetas
 
     ctx.fillStyle =
         "rgba(255,203,85,0.75)";
@@ -1713,7 +2359,6 @@ function drawWifBackground() {
     );
 
     ctx.fill();
-
 
     ctx.fillStyle =
         "rgba(255,100,210,0.4)";
@@ -1733,7 +2378,7 @@ function drawWifBackground() {
 
 
 // ============================================================
-// OBSTÁCULOS
+// PIPES
 // ============================================================
 
 function drawPipes() {
@@ -1743,15 +2388,11 @@ function drawPipes() {
             currentLevel - 1
         ];
 
-
     pipes.forEach(
         pipe => {
 
-            // Corpo
-
             ctx.fillStyle =
                 world.obstacle;
-
 
             ctx.fillRect(
                 pipe.x,
@@ -1759,7 +2400,6 @@ function drawPipes() {
                 pipe.width,
                 pipe.top
             );
-
 
             ctx.fillRect(
                 pipe.x,
@@ -1769,12 +2409,8 @@ function drawPipes() {
                     pipe.bottom
             );
 
-
-            // Borda brilhante
-
             ctx.fillStyle =
                 world.obstacleLight;
-
 
             ctx.fillRect(
                 pipe.x - 7,
@@ -1783,7 +2419,6 @@ function drawPipes() {
                 14
             );
 
-
             ctx.fillRect(
                 pipe.x - 7,
                 pipe.bottom,
@@ -1791,16 +2426,11 @@ function drawPipes() {
                 14
             );
 
-
-            // Detalhes
-
             ctx.fillStyle =
                 world.accent;
 
-
             ctx.globalAlpha =
                 0.5;
-
 
             ctx.fillRect(
                 pipe.x + 10,
@@ -1808,7 +2438,6 @@ function drawPipes() {
                 5,
                 pipe.top
             );
-
 
             ctx.fillRect(
                 pipe.x + 10,
@@ -1818,7 +2447,6 @@ function drawPipes() {
                     pipe.bottom
             );
 
-
             ctx.globalAlpha = 1;
         }
     );
@@ -1826,7 +2454,7 @@ function drawPipes() {
 
 
 // ============================================================
-// MOEDAS
+// COINS
 // ============================================================
 
 function drawCoins() {
@@ -1834,20 +2462,15 @@ function drawCoins() {
     coins.forEach(
         coin => {
 
-            if (
-                coin.collected
-            )
+            if (coin.collected)
                 return;
 
-
             ctx.save();
-
 
             ctx.translate(
                 coin.x,
                 coin.y
             );
-
 
             const pulse =
                 0.9 +
@@ -1857,21 +2480,16 @@ function drawCoins() {
                 ) *
                     0.1;
 
-
             ctx.scale(
                 pulse,
                 pulse
             );
-
-
-            // Glow
 
             ctx.shadowBlur =
                 18;
 
             ctx.shadowColor =
                 "#ffe600";
-
 
             ctx.beginPath();
 
@@ -1883,15 +2501,12 @@ function drawCoins() {
                 Math.PI * 2
             );
 
-
             ctx.fillStyle =
                 "#ffe600";
 
             ctx.fill();
 
-
             ctx.shadowBlur = 0;
-
 
             ctx.strokeStyle =
                 "#8a6500";
@@ -1899,7 +2514,6 @@ function drawCoins() {
             ctx.lineWidth = 3;
 
             ctx.stroke();
-
 
             ctx.fillStyle =
                 "#8a6500";
@@ -1913,13 +2527,11 @@ function drawCoins() {
             ctx.textBaseline =
                 "middle";
 
-
             ctx.fillText(
                 "$",
                 0,
                 1
             );
-
 
             ctx.restore();
         }
@@ -1928,7 +2540,7 @@ function drawCoins() {
 
 
 // ============================================================
-// DESENHAR PERSONAGEM
+// PLAYER
 // ============================================================
 
 function drawPlayer() {
@@ -1936,84 +2548,526 @@ function drawPlayer() {
     if (!player)
         return;
 
-
     ctx.save();
-
 
     ctx.translate(
         player.x,
         player.y
     );
 
-
     ctx.rotate(
         player.rotation
     );
-
 
     const world =
         worlds[
             currentLevel - 1
         ];
 
-
-    // Cada skin é completamente diferente
-
-    if (
-        world.skin ===
-        "pepe"
-    ) {
-
+    if (world.skin === "pepe")
         drawPepe();
 
-    } else if (
-        world.skin ===
-        "shib"
-    ) {
-
+    if (world.skin === "shib")
         drawShib();
 
-    } else if (
-        world.skin ===
-        "doge"
-    ) {
-
+    if (world.skin === "doge")
         drawDoge();
 
-    } else if (
-        world.skin ===
-        "troll"
-    ) {
-
+    if (world.skin === "troll")
         drawTroll();
 
-    } else if (
-        world.skin ===
-        "sixtyseven"
-    ) {
-
+    if (world.skin === "sixtyseven")
         draw67();
 
-    } else if (
-        world.skin ===
-        "wif"
-    ) {
-
+    if (world.skin === "wif")
         drawWif();
-    }
 
+    drawAccessories(
+        ctx,
+        equippedAccessories
+    );
 
     ctx.restore();
 }
 
 
 // ============================================================
-// PEPE SKIN
+// ACCESSORIES
+// ============================================================
+
+function drawAccessories(
+    drawingContext,
+    equipped
+) {
+
+    const c =
+        drawingContext;
+
+    // AURA
+    if (
+        equipped.aura ===
+        "diamondAura"
+    ) {
+
+        c.save();
+
+        c.shadowBlur = 25;
+        c.shadowColor = "#ffffff";
+
+        c.strokeStyle =
+            "rgba(120,240,255,0.8)";
+
+        c.lineWidth = 5;
+
+        c.beginPath();
+
+        c.arc(
+            0,
+            0,
+            37,
+            0,
+            Math.PI * 2
+        );
+
+        c.stroke();
+
+        c.restore();
+    }
+
+
+    // HEAD
+    if (
+        equipped.head ===
+        "crown"
+    ) {
+
+        c.fillStyle =
+            "#ffd21c";
+
+        c.beginPath();
+
+        c.moveTo(
+            -20,
+            -28
+        );
+
+        c.lineTo(
+            -15,
+            -48
+        );
+
+        c.lineTo(
+            -5,
+            -37
+        );
+
+        c.lineTo(
+            0,
+            -52
+        );
+
+        c.lineTo(
+            7,
+            -37
+        );
+
+        c.lineTo(
+            18,
+            -48
+        );
+
+        c.lineTo(
+            20,
+            -28
+        );
+
+        c.closePath();
+
+        c.fill();
+
+        c.strokeStyle =
+            "#9b6900";
+
+        c.lineWidth = 2;
+
+        c.stroke();
+    }
+
+
+    if (
+        equipped.head ===
+        "tophat"
+    ) {
+
+        c.fillStyle =
+            "#151515";
+
+        c.fillRect(
+            -20,
+            -47,
+            40,
+            20
+        );
+
+        c.fillRect(
+            -28,
+            -29,
+            56,
+            7
+        );
+
+        c.fillStyle =
+            "#d7aa31";
+
+        c.fillRect(
+            -20,
+            -32,
+            40,
+            5
+        );
+    }
+
+
+    // FACE
+    if (
+        equipped.face ===
+        "sunglasses"
+    ) {
+
+        c.fillStyle =
+            "#111";
+
+        c.fillRect(
+            -22,
+            -15,
+            18,
+            9
+        );
+
+        c.fillRect(
+            4,
+            -15,
+            18,
+            9
+        );
+
+        c.fillRect(
+            -4,
+            -12,
+            8,
+            4
+        );
+
+        c.strokeStyle =
+            "#777";
+
+        c.lineWidth = 2;
+
+        c.strokeRect(
+            -22,
+            -15,
+            18,
+            9
+        );
+
+        c.strokeRect(
+            4,
+            -15,
+            18,
+            9
+        );
+    }
+
+
+    if (
+        equipped.face ===
+        "goldGlasses"
+    ) {
+
+        c.fillStyle =
+            "#ffd700";
+
+        c.fillRect(
+            -22,
+            -15,
+            18,
+            9
+        );
+
+        c.fillRect(
+            4,
+            -15,
+            18,
+            9
+        );
+
+        c.fillRect(
+            -4,
+            -12,
+            8,
+            4
+        );
+
+        c.strokeStyle =
+            "#fff4a3";
+
+        c.lineWidth = 2;
+
+        c.strokeRect(
+            -22,
+            -15,
+            18,
+            9
+        );
+
+        c.strokeRect(
+            4,
+            -15,
+            18,
+            9
+        );
+    }
+
+
+    // BODY
+    if (
+        equipped.body ===
+        "chain"
+    ) {
+
+        c.strokeStyle =
+            "#70f5ff";
+
+        c.lineWidth = 5;
+
+        c.beginPath();
+
+        c.arc(
+            0,
+            13,
+            20,
+            0.1,
+            Math.PI - 0.1
+        );
+
+        c.stroke();
+
+        c.fillStyle =
+            "#ffffff";
+
+        c.beginPath();
+
+        c.moveTo(
+            -5,
+            30
+        );
+
+        c.lineTo(
+            0,
+            38
+        );
+
+        c.lineTo(
+            5,
+            30
+        );
+
+        c.closePath();
+
+        c.fill();
+    }
+
+
+    // TRAILS
+    if (
+        equipped.trail
+    ) {
+
+        drawTrail(
+            c,
+            equipped.trail
+        );
+    }
+}
+
+
+// ============================================================
+// TRAILS
+// ============================================================
+
+function drawTrail(
+    c,
+    trail
+) {
+
+    const time =
+        performance.now() *
+        0.01;
+
+    c.save();
+
+    c.globalAlpha =
+        0.75;
+
+    if (
+        trail ===
+        "fire"
+    ) {
+
+        c.fillStyle =
+            "#ff5a00";
+
+        for (
+            let i = 0;
+            i < 5;
+            i++
+        ) {
+
+            c.beginPath();
+
+            c.arc(
+                -28 - i * 8,
+                8 +
+                    Math.sin(
+                        time + i
+                    ) *
+                    6,
+                5 +
+                    Math.random() *
+                        4,
+                0,
+                Math.PI * 2
+            );
+
+            c.fill();
+        }
+    }
+
+
+    if (
+        trail ===
+        "lightning"
+    ) {
+
+        c.strokeStyle =
+            "#00eaff";
+
+        c.lineWidth = 3;
+
+        for (
+            let i = 0;
+            i < 4;
+            i++
+        ) {
+
+            c.beginPath();
+
+            c.moveTo(
+                -25 - i * 9,
+                0
+            );
+
+            c.lineTo(
+                -38 - i * 9,
+                8
+            );
+
+            c.lineTo(
+                -30 - i * 9,
+                12
+            );
+
+            c.lineTo(
+                -42 - i * 9,
+                23
+            );
+
+            c.stroke();
+        }
+    }
+
+
+    if (
+        trail ===
+        "rainbow"
+    ) {
+
+        const colors = [
+            "#ff0000",
+            "#ff8800",
+            "#ffff00",
+            "#00ff66",
+            "#00ccff",
+            "#7744ff",
+            "#ff00cc"
+        ];
+
+        colors.forEach(
+            (color, i) => {
+
+                c.fillStyle =
+                    color;
+
+                c.beginPath();
+
+                c.arc(
+                    -30 -
+                        i * 6,
+                    Math.sin(
+                        time +
+                            i
+                    ) *
+                        10,
+                    4,
+                    0,
+                    Math.PI * 2
+                );
+
+                c.fill();
+            }
+        );
+    }
+
+
+    if (
+        trail ===
+        "money"
+    ) {
+
+        c.fillStyle =
+            "#5cff75";
+
+        c.font =
+            "bold 16px Arial";
+
+        c.fillText(
+            "$",
+            -35,
+            -2
+        );
+
+        c.fillText(
+            "$",
+            -52,
+            15
+        );
+
+        c.fillText(
+            "$",
+            -68,
+            -8
+        );
+    }
+
+    c.restore();
+}
+
+
+// ============================================================
+// PEPE
 // ============================================================
 
 function drawPepe() {
-
-    // Corpo verde
 
     ctx.fillStyle =
         "#62b44b";
@@ -2032,9 +3086,6 @@ function drawPepe() {
 
     ctx.fill();
 
-
-    // Cabeça
-
     ctx.fillStyle =
         "#76c957";
 
@@ -2050,12 +3101,8 @@ function drawPepe() {
 
     ctx.fill();
 
-
-    // Olhos
-
     ctx.fillStyle =
         "#dff5d8";
-
 
     ctx.beginPath();
 
@@ -2076,12 +3123,10 @@ function drawPepe() {
     );
 
     ctx.fill();
-
 
     ctx.fillStyle =
         "#111";
 
-
     ctx.beginPath();
 
     ctx.arc(
@@ -2101,9 +3146,6 @@ function drawPepe() {
     );
 
     ctx.fill();
-
-
-    // Boca Pepe
 
     ctx.fillStyle =
         "#301c18";
@@ -2122,9 +3164,6 @@ function drawPepe() {
 
     ctx.fill();
 
-
-    // Língua
-
     ctx.fillStyle =
         "#e87979";
 
@@ -2141,9 +3180,6 @@ function drawPepe() {
     );
 
     ctx.fill();
-
-
-    // Asa
 
     ctx.fillStyle =
         "#4f9e40";
@@ -2165,12 +3201,10 @@ function drawPepe() {
 
 
 // ============================================================
-// SHIB SKIN
+// SHIB
 // ============================================================
 
 function drawShib() {
-
-    // Corpo
 
     ctx.fillStyle =
         "#d77b32";
@@ -2189,9 +3223,6 @@ function drawShib() {
 
     ctx.fill();
 
-
-    // Cabeça
-
     ctx.fillStyle =
         "#e28a3b";
 
@@ -2206,9 +3237,6 @@ function drawShib() {
     );
 
     ctx.fill();
-
-
-    // Orelhas
 
     ctx.fillStyle =
         "#d36f2e";
@@ -2232,7 +3260,6 @@ function drawShib() {
 
     ctx.fill();
 
-
     ctx.beginPath();
 
     ctx.moveTo(
@@ -2252,9 +3279,6 @@ function drawShib() {
 
     ctx.fill();
 
-
-    // Focinho
-
     ctx.fillStyle =
         "#fff0d2";
 
@@ -2271,9 +3295,6 @@ function drawShib() {
     );
 
     ctx.fill();
-
-
-    // Olhos
 
     ctx.fillStyle =
         "#111";
@@ -2298,12 +3319,6 @@ function drawShib() {
 
     ctx.fill();
 
-
-    // Nariz
-
-    ctx.fillStyle =
-        "#111";
-
     ctx.beginPath();
 
     ctx.arc(
@@ -2315,9 +3330,6 @@ function drawShib() {
     );
 
     ctx.fill();
-
-
-    // Boca
 
     ctx.strokeStyle =
         "#111";
@@ -2335,9 +3347,6 @@ function drawShib() {
     );
 
     ctx.stroke();
-
-
-    // Asa
 
     ctx.fillStyle =
         "#b96329";
@@ -2359,12 +3368,10 @@ function drawShib() {
 
 
 // ============================================================
-// DOGE SKIN
+// DOGE
 // ============================================================
 
 function drawDoge() {
-
-    // Pescoço
 
     ctx.fillStyle =
         "#d49b55";
@@ -2375,9 +3382,6 @@ function drawDoge() {
         18,
         15
     );
-
-
-    // Cabeça
 
     ctx.fillStyle =
         "#dba45b";
@@ -2395,9 +3399,6 @@ function drawDoge() {
     );
 
     ctx.fill();
-
-
-    // Orelhas
 
     ctx.fillStyle =
         "#b8793c";
@@ -2421,7 +3422,6 @@ function drawDoge() {
 
     ctx.fill();
 
-
     ctx.beginPath();
 
     ctx.moveTo(
@@ -2441,9 +3441,6 @@ function drawDoge() {
 
     ctx.fill();
 
-
-    // Focinho
-
     ctx.fillStyle =
         "#f0c47b";
 
@@ -2460,9 +3457,6 @@ function drawDoge() {
     );
 
     ctx.fill();
-
-
-    // Olhos
 
     ctx.fillStyle =
         "#111";
@@ -2487,9 +3481,6 @@ function drawDoge() {
 
     ctx.fill();
 
-
-    // Nariz
-
     ctx.beginPath();
 
     ctx.arc(
@@ -2501,9 +3492,6 @@ function drawDoge() {
     );
 
     ctx.fill();
-
-
-    // Boca
 
     ctx.strokeStyle =
         "#111";
@@ -2524,9 +3512,6 @@ function drawDoge() {
 
     ctx.stroke();
 
-
-    // Coleira
-
     ctx.fillStyle =
         "#e44a38";
 
@@ -2540,12 +3525,10 @@ function drawDoge() {
 
 
 // ============================================================
-// TROLL SKIN
+// TROLL
 // ============================================================
 
 function drawTroll() {
-
-    // Corpo
 
     ctx.fillStyle =
         "#3dbb62";
@@ -2564,9 +3547,6 @@ function drawTroll() {
 
     ctx.fill();
 
-
-    // Cabeça
-
     ctx.fillStyle =
         "#52d873";
 
@@ -2583,9 +3563,6 @@ function drawTroll() {
     );
 
     ctx.fill();
-
-
-    // Cabelo troll
 
     ctx.fillStyle =
         "#35a853";
@@ -2606,7 +3583,9 @@ function drawTroll() {
         ctx.lineTo(
             i,
             -38 -
-                Math.abs(i % 16)
+                Math.abs(
+                    i % 16
+                )
         );
     }
 
@@ -2616,9 +3595,6 @@ function drawTroll() {
     );
 
     ctx.fill();
-
-
-    // Olhos
 
     ctx.fillStyle =
         "white";
@@ -2646,7 +3622,6 @@ function drawTroll() {
     );
 
     ctx.fill();
-
 
     ctx.fillStyle =
         "#111";
@@ -2671,9 +3646,6 @@ function drawTroll() {
 
     ctx.fill();
 
-
-    // Nariz
-
     ctx.fillStyle =
         "#2f8e4c";
 
@@ -2688,9 +3660,6 @@ function drawTroll() {
     );
 
     ctx.fill();
-
-
-    // Sorriso
 
     ctx.fillStyle =
         "#25152b";
@@ -2708,9 +3677,6 @@ function drawTroll() {
     );
 
     ctx.fill();
-
-
-    // Dentes
 
     ctx.fillStyle =
         "white";
@@ -2732,12 +3698,10 @@ function drawTroll() {
 
 
 // ============================================================
-// 67 SKIN
+// 67
 // ============================================================
 
 function draw67() {
-
-    // Corpo futurista
 
     ctx.fillStyle =
         "#16b8d4";
@@ -2754,9 +3718,6 @@ function draw67() {
 
     ctx.fill();
 
-
-    // Face
-
     ctx.fillStyle =
         "#071b35";
 
@@ -2771,9 +3732,6 @@ function draw67() {
     );
 
     ctx.fill();
-
-
-    // Olhos digitais
 
     ctx.fillStyle =
         "#00eaff";
@@ -2792,18 +3750,12 @@ function draw67() {
         5
     );
 
-
-    // Boca
-
     ctx.fillRect(
         -10,
         4,
         20,
         4
     );
-
-
-    // Linhas neon
 
     ctx.strokeStyle =
         "#00eaff";
@@ -2834,9 +3786,6 @@ function draw67() {
 
     ctx.stroke();
 
-
-    // Asa
-
     ctx.fillStyle =
         "#087da8";
 
@@ -2862,12 +3811,10 @@ function draw67() {
 
 
 // ============================================================
-// WIF SKIN
+// WIF
 // ============================================================
 
 function drawWif() {
-
-    // Corpo do cão
 
     ctx.fillStyle =
         "#d89b55";
@@ -2886,9 +3833,6 @@ function drawWif() {
 
     ctx.fill();
 
-
-    // Cabeça
-
     ctx.fillStyle =
         "#e5aa61";
 
@@ -2905,9 +3849,6 @@ function drawWif() {
     );
 
     ctx.fill();
-
-
-    // Orelhas
 
     ctx.fillStyle =
         "#c98242";
@@ -2931,7 +3872,6 @@ function drawWif() {
 
     ctx.fill();
 
-
     ctx.beginPath();
 
     ctx.moveTo(
@@ -2950,9 +3890,6 @@ function drawWif() {
     );
 
     ctx.fill();
-
-
-    // CHAPÉU WIF
 
     ctx.fillStyle =
         "#ead9bd";
@@ -2988,9 +3925,6 @@ function drawWif() {
 
     ctx.fill();
 
-
-    // Aba
-
     ctx.fillStyle =
         "#d2bfa3";
 
@@ -3007,9 +3941,6 @@ function drawWif() {
     );
 
     ctx.fill();
-
-
-    // Olhos
 
     ctx.fillStyle =
         "#111";
@@ -3034,9 +3965,6 @@ function drawWif() {
 
     ctx.fill();
 
-
-    // Focinho
-
     ctx.fillStyle =
         "#f0c27b";
 
@@ -3054,9 +3982,6 @@ function drawWif() {
 
     ctx.fill();
 
-
-    // Nariz
-
     ctx.fillStyle =
         "#111";
 
@@ -3072,9 +3997,6 @@ function drawWif() {
 
     ctx.fill();
 
-
-    // Coleira
-
     ctx.fillStyle =
         "#ffcb55";
 
@@ -3088,7 +4010,7 @@ function drawWif() {
 
 
 // ============================================================
-// PARTÍCULAS
+// PARTICLES DRAW
 // ============================================================
 
 function drawParticles() {
@@ -3101,7 +4023,6 @@ function drawParticles() {
 
             ctx.fillStyle =
                 particle.color;
-
 
             ctx.beginPath();
 
@@ -3117,13 +4038,12 @@ function drawParticles() {
         }
     );
 
-
     ctx.globalAlpha = 1;
 }
 
 
 // ============================================================
-// TEXTO DO MUNDO
+// WORLD TITLE
 // ============================================================
 
 function drawWorldTitle() {
@@ -3133,17 +4053,14 @@ function drawWorldTitle() {
             currentLevel - 1
         ];
 
-
     ctx.textAlign =
         "center";
 
     ctx.textBaseline =
         "middle";
 
-
     ctx.font =
         "900 24px Arial";
-
 
     ctx.lineWidth = 5;
 
@@ -3155,7 +4072,6 @@ function drawWorldTitle() {
         W / 2,
         H - 35
     );
-
 
     ctx.fillStyle =
         "white";
@@ -3169,7 +4085,7 @@ function drawWorldTitle() {
 
 
 // ============================================================
-// PROGRESSO
+// PROGRESS
 // ============================================================
 
 function drawProgress() {
@@ -3179,30 +4095,22 @@ function drawProgress() {
             currentLevel - 1
         ];
 
-
     const width =
         Math.min(
             300,
             W * 0.45
         );
 
-
     const height = 8;
-
 
     const x =
         W / 2 -
         width / 2;
 
-
     const y = 72;
-
-
-    // Fundo
 
     ctx.fillStyle =
         "rgba(0,0,0,0.4)";
-
 
     ctx.fillRect(
         x,
@@ -3211,9 +4119,6 @@ function drawProgress() {
         height
     );
 
-
-    // Progresso
-
     const progress =
         Math.min(
             score /
@@ -3221,15 +4126,14 @@ function drawProgress() {
             1
         );
 
-
     ctx.fillStyle =
         world.accent;
-
 
     ctx.fillRect(
         x,
         y,
-        width * progress,
+        width *
+            progress,
         height
     );
 }
@@ -3267,7 +4171,6 @@ function gameLoop() {
 
     draw();
 
-
     if (gameRunning) {
 
         animationFrame =
@@ -3287,11 +4190,9 @@ function endGame() {
     if (gameFinished)
         return;
 
-
     gameFinished = true;
 
     gameRunning = false;
-
 
     if (
         score >
@@ -3301,29 +4202,39 @@ function endGame() {
         bestScore =
             score;
 
-
         localStorage.setItem(
             "memeFlyBest",
             bestScore
         );
     }
 
+    if (
+        score >
+        highestScore
+    ) {
+
+        highestScore =
+            score;
+
+        localStorage.setItem(
+            "memeFlyHighestScore",
+            highestScore
+        );
+    }
 
     finalScore.textContent =
         score;
 
-
     gameOver.classList.remove(
         "hidden"
     );
-
 
     updateMenuStats();
 }
 
 
 // ============================================================
-// COMPLETAR NÍVEL
+// COMPLETE LEVEL
 // ============================================================
 
 function completeLevel() {
@@ -3331,20 +4242,30 @@ function completeLevel() {
     if (gameFinished)
         return;
 
-
     gameFinished = true;
 
     gameRunning = false;
-
 
     completeScore.textContent =
         score;
 
 
-    // --------------------------------------------
-    // DESBLOQUEAR APENAS O PRÓXIMO
-    // --------------------------------------------
+    // Só conta uma vez cada mundo
+    if (
+        currentLevel >=
+        unlockedLevel
+    ) {
 
+        completedWorlds++;
+
+        localStorage.setItem(
+            "memeFlyCompletedWorlds",
+            completedWorlds
+        );
+    }
+
+
+    // Desbloquear próximo mundo
     if (
         currentLevel ===
         unlockedLevel &&
@@ -3355,15 +4276,12 @@ function completeLevel() {
         unlockedLevel =
             currentLevel + 1;
 
-
         localStorage.setItem(
             "memeFlyUnlocked",
             unlockedLevel
         );
     }
 
-
-    // Melhor score
 
     if (
         score >
@@ -3373,7 +4291,6 @@ function completeLevel() {
         bestScore =
             score;
 
-
         localStorage.setItem(
             "memeFlyBest",
             bestScore
@@ -3381,9 +4298,20 @@ function completeLevel() {
     }
 
 
-    // --------------------------------------------
-    // BOTÃO NEXT
-    // --------------------------------------------
+    if (
+        score >
+        highestScore
+    ) {
+
+        highestScore =
+            score;
+
+        localStorage.setItem(
+            "memeFlyHighestScore",
+            highestScore
+        );
+    }
+
 
     if (
         currentLevel <
@@ -3402,10 +4330,11 @@ function completeLevel() {
     }
 
 
+    saveData();
+
     levelComplete.classList.remove(
         "hidden"
     );
-
 
     updateMenuStats();
 }
@@ -3419,8 +4348,6 @@ nextBtn.addEventListener(
     "click",
     () => {
 
-        // Segurança adicional
-
         if (
             currentLevel <
             unlockedLevel
@@ -3430,13 +4357,13 @@ nextBtn.addEventListener(
                 currentLevel + 1
             );
         }
-
     }
 );
 
 
 // ============================================================
-// COMEÇAR NO MENU
+// START
 // ============================================================
 
 showMenu();
+```
