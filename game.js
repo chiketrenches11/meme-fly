@@ -1,6 +1,6 @@
-// ===============================
-// MEME FLY
-// ===============================
+// ============================================================
+// MEME FLY — WORLD EDITION
+// ============================================================
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
@@ -15,6 +15,8 @@ const backBtn = document.getElementById("backBtn");
 
 const retryBtn = document.getElementById("retryBtn");
 const menuBtn = document.getElementById("menuBtn");
+const nextBtn = document.getElementById("nextBtn");
+const levelsBtn2 = document.getElementById("levelsBtn2");
 
 const gameOver = document.getElementById("gameOver");
 const levelComplete = document.getElementById("levelComplete");
@@ -29,106 +31,151 @@ const coinsText = document.getElementById("coins");
 const finalScore = document.getElementById("finalScore");
 const completeScore = document.getElementById("completeScore");
 
-const nextBtn = document.getElementById("nextBtn");
-const levelsBtn2 = document.getElementById("levelsBtn2");
 
+// ============================================================
+// WORLDS
+// ============================================================
 
-// ===============================
-// GAME DATA
-// ===============================
-
-const levels = [
+const worlds = [
     {
         name: "PEPE",
+        title: "PEPE SWAMP",
+        emoji: "🐸",
+        sky: "#78d84b",
+        sky2: "#c9f56a",
+        ground: "#315c22",
+        obstacle: "#174f29",
+        accent: "#48ff66",
         gravity: 0.42,
+        jump: -7.4,
+        speed: 3.1,
+        gap: 190,
+        target: 8
+    },
+
+    {
+        name: "SHIB",
+        title: "SHIB CITY",
+        emoji: "🐕",
+        sky: "#ff5548",
+        sky2: "#ffd0a6",
+        ground: "#751d28",
+        obstacle: "#8d1725",
+        accent: "#fff1d0",
+        gravity: 0.44,
         jump: -7.5,
-        speed: 3.2,
+        speed: 3.4,
         gap: 180,
         target: 10
     },
+
     {
-        name: "SHIB",
-        gravity: 0.44,
+        name: "DOGE",
+        title: "DOGE SPACE",
+        emoji: "🐶",
+        sky: "#172052",
+        sky2: "#5b3ca8",
+        ground: "#11152f",
+        obstacle: "#25245f",
+        accent: "#ffe04a",
+        gravity: 0.46,
         jump: -7.6,
-        speed: 3.5,
+        speed: 3.7,
         gap: 175,
         target: 12
     },
+
     {
-        name: "DOGE",
-        gravity: 0.46,
+        name: "TROLL",
+        title: "TROLL INTERNET",
+        emoji: "👹",
+        sky: "#7d27c7",
+        sky2: "#12e8a4",
+        ground: "#26113d",
+        obstacle: "#40156d",
+        accent: "#51ffbd",
+        gravity: 0.48,
         jump: -7.7,
-        speed: 3.8,
+        speed: 4,
         gap: 170,
         target: 14
     },
+
     {
-        name: "TROLL",
-        gravity: 0.48,
+        name: "67",
+        title: "67 DIMENSION",
+        emoji: "🗿",
+        sky: "#071b35",
+        sky2: "#087eaa",
+        ground: "#061225",
+        obstacle: "#0b3156",
+        accent: "#00eaff",
+        gravity: 0.50,
         jump: -7.8,
-        speed: 4.1,
+        speed: 4.3,
         gap: 165,
         target: 16
     },
-    {
-        name: "67",
-        gravity: 0.50,
-        jump: -7.9,
-        speed: 4.4,
-        gap: 160,
-        target: 18
-    },
+
     {
         name: "FINAL",
+        title: "MEME UNIVERSE",
+        emoji: "🚀",
+        sky: "#080018",
+        sky2: "#5b087d",
+        ground: "#150025",
+        obstacle: "#30034d",
+        accent: "#ff48e8",
         gravity: 0.53,
         jump: -8,
-        speed: 4.8,
-        gap: 155,
+        speed: 4.7,
+        gap: 160,
         target: 20
     }
 ];
 
 
-// ===============================
+// ============================================================
 // SAVE DATA
-// ===============================
+// ============================================================
 
 let unlockedLevel =
-    Number(localStorage.getItem("unlockedLevel")) || 1;
+    Number(localStorage.getItem("memeFlyUnlocked")) || 1;
 
 let bestScore =
-    Number(localStorage.getItem("bestScore")) || 0;
+    Number(localStorage.getItem("memeFlyBest")) || 0;
 
 let totalCoins =
-    Number(localStorage.getItem("totalCoins")) || 0;
+    Number(localStorage.getItem("memeFlyCoins")) || 0;
 
 bestScoreText.textContent = bestScore;
 coinsText.textContent = totalCoins;
 
 
-// ===============================
+// ============================================================
 // CANVAS
-// ===============================
+// ============================================================
 
 function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 }
 
-window.addEventListener("resize", resizeCanvas);
-
 resizeCanvas();
 
+window.addEventListener("resize", resizeCanvas);
 
-// ===============================
+
+// ============================================================
 // GAME VARIABLES
-// ===============================
+// ============================================================
 
 let currentLevel = 1;
 
-let bird;
+let player;
 let pipes = [];
 let coins = [];
+let particles = [];
 
 let score = 0;
 let collectedCoins = 0;
@@ -136,14 +183,13 @@ let collectedCoins = 0;
 let gameRunning = false;
 let gameFinished = false;
 
-let lastPipe = 0;
+let lastPipeTime = 0;
+let animationFrame;
 
-let animation;
 
-
-// ===============================
+// ============================================================
 // LEVEL MENU
-// ===============================
+// ============================================================
 
 function createLevels() {
 
@@ -152,15 +198,17 @@ function createLevels() {
 
     container.innerHTML = "";
 
-    levels.forEach((level, index) => {
+    worlds.forEach((world, index) => {
 
-        const number = index + 1;
+        const levelNumber = index + 1;
 
-        const button = document.createElement("button");
+        const button =
+            document.createElement("button");
 
         button.className = "level";
 
-        if (number > unlockedLevel) {
+        if (levelNumber > unlockedLevel) {
+
             button.classList.add("locked");
 
             button.innerHTML = `
@@ -173,13 +221,23 @@ function createLevels() {
         } else {
 
             button.innerHTML = `
-                <div class="number">${number}</div>
-                <div class="name">${level.name}</div>
+                <div style="font-size:34px">
+                    ${world.emoji}
+                </div>
+
+                <div class="number">
+                    ${levelNumber}
+                </div>
+
+                <div class="name">
+                    ${world.name}
+                </div>
             `;
 
-            button.addEventListener("click", () => {
-                startGame(number);
-            });
+            button.addEventListener(
+                "click",
+                () => startGame(levelNumber)
+            );
         }
 
         container.appendChild(button);
@@ -189,11 +247,13 @@ function createLevels() {
 createLevels();
 
 
-// ===============================
-// SCREEN MANAGEMENT
-// ===============================
+// ============================================================
+// SCREENS
+// ============================================================
 
 function showMenu() {
+
+    gameRunning = false;
 
     menu.classList.remove("hidden");
     levelsScreen.classList.add("hidden");
@@ -206,8 +266,9 @@ function showMenu() {
     coinsText.textContent = totalCoins;
 }
 
-
 function showLevels() {
+
+    gameRunning = false;
 
     menu.classList.add("hidden");
     levelsScreen.classList.remove("hidden");
@@ -216,13 +277,9 @@ function showLevels() {
     createLevels();
 }
 
-
 levelsBtn.addEventListener("click", showLevels);
-
 backBtn.addEventListener("click", showMenu);
-
 menuBtn.addEventListener("click", showMenu);
-
 levelsBtn2.addEventListener("click", showLevels);
 
 playBtn.addEventListener("click", () => {
@@ -234,100 +291,129 @@ retryBtn.addEventListener("click", () => {
 });
 
 
-// ===============================
+// ============================================================
 // START GAME
-// ===============================
+// ============================================================
 
 function startGame(levelNumber) {
 
     currentLevel = levelNumber;
 
-    const settings = levels[currentLevel - 1];
+    const world =
+        worlds[currentLevel - 1];
 
     score = 0;
     collectedCoins = 0;
 
     pipes = [];
     coins = [];
+    particles = [];
 
     gameRunning = true;
     gameFinished = false;
-
-    gameOver.classList.add("hidden");
-    levelComplete.classList.add("hidden");
 
     menu.classList.add("hidden");
     levelsScreen.classList.add("hidden");
     game.classList.remove("hidden");
 
-    currentLevelText.textContent = currentLevel;
-    scoreText.textContent = score;
-    gameCoinsText.textContent = collectedCoins;
+    gameOver.classList.add("hidden");
+    levelComplete.classList.add("hidden");
 
-    bird = {
+    currentLevelText.textContent =
+        currentLevel;
+
+    scoreText.textContent = score;
+
+    gameCoinsText.textContent =
+        collectedCoins;
+
+    player = {
         x: canvas.width * 0.25,
         y: canvas.height * 0.5,
         velocity: 0,
-        radius: 22
+        radius: 23
     };
 
-    lastPipe = 0;
+    lastPipeTime =
+        performance.now() - 900;
 
-    cancelAnimationFrame(animation);
+    cancelAnimationFrame(animationFrame);
 
     gameLoop();
 }
 
 
-// ===============================
-// JUMP
-// ===============================
+// ============================================================
+// PLAYER INPUT
+// ============================================================
 
 function jump() {
 
     if (!gameRunning) return;
 
-    const settings = levels[currentLevel - 1];
+    const world =
+        worlds[currentLevel - 1];
 
-    bird.velocity = settings.jump;
+    player.velocity =
+        world.jump;
+
+    createParticles(
+        player.x,
+        player.y,
+        world.accent,
+        6
+    );
 }
 
-document.addEventListener("keydown", event => {
+document.addEventListener(
+    "keydown",
+    event => {
 
-    if (
-        event.code === "Space" ||
-        event.code === "ArrowUp"
-    ) {
+        if (
+            event.code === "Space" ||
+            event.code === "ArrowUp"
+        ) {
+
+            event.preventDefault();
+
+            jump();
+        }
+    }
+);
+
+canvas.addEventListener(
+    "mousedown",
+    jump
+);
+
+canvas.addEventListener(
+    "touchstart",
+    event => {
 
         event.preventDefault();
 
         jump();
-    }
-});
 
-canvas.addEventListener("mousedown", jump);
-
-canvas.addEventListener("touchstart", event => {
-
-    event.preventDefault();
-
-    jump();
-
-}, { passive: false });
+    },
+    { passive: false }
+);
 
 
-// ===============================
+// ============================================================
 // CREATE PIPE
-// ===============================
+// ============================================================
 
 function createPipe() {
 
-    const settings = levels[currentLevel - 1];
+    const world =
+        worlds[currentLevel - 1];
 
-    const minTop = 80;
+    const minTop = 70;
 
     const maxTop =
-        canvas.height - settings.gap - 160;
+        canvas.height -
+        world.gap -
+        130;
 
     const top =
         Math.random() *
@@ -335,85 +421,119 @@ function createPipe() {
         minTop;
 
     pipes.push({
-        x: canvas.width + 50,
-        width: 75,
-        top: top,
-        bottom: top + settings.gap,
+
+        x: canvas.width + 80,
+
+        width: 78,
+
+        top,
+
+        bottom:
+            top + world.gap,
+
         passed: false
     });
 
-    // Create a coin between the pipes
     coins.push({
-        x: canvas.width + 87,
-        y: top + settings.gap / 2,
-        radius: 10,
+
+        x:
+            canvas.width + 119,
+
+        y:
+            top + world.gap / 2,
+
+        radius: 13,
+
         collected: false
     });
 }
 
 
-// ===============================
-// UPDATE GAME
-// ===============================
+// ============================================================
+// UPDATE
+// ============================================================
 
 function update() {
 
     if (!gameRunning) return;
 
-    const settings = levels[currentLevel - 1];
+    const world =
+        worlds[currentLevel - 1];
 
-    // Bird physics
-    bird.velocity += settings.gravity;
+    // Gravity
+    player.velocity +=
+        world.gravity;
 
-    bird.y += bird.velocity;
+    player.y +=
+        player.velocity;
 
-    // Create pipes
+
+    // Pipes
     if (
-        performance.now() - lastPipe >
-        1500
+        performance.now() -
+        lastPipeTime >
+        1450
     ) {
 
         createPipe();
 
-        lastPipe = performance.now();
+        lastPipeTime =
+            performance.now();
     }
+
 
     // Move pipes
     pipes.forEach(pipe => {
 
-        pipe.x -= settings.speed;
+        pipe.x -= world.speed;
 
-        if (!pipe.passed &&
-            pipe.x + pipe.width < bird.x) {
+        if (
+            !pipe.passed &&
+            pipe.x + pipe.width <
+            player.x
+        ) {
 
             pipe.passed = true;
 
             score++;
 
-            scoreText.textContent = score;
+            scoreText.textContent =
+                score;
+
+            createParticles(
+                player.x,
+                player.y,
+                world.accent,
+                12
+            );
 
             if (
-                score >= settings.target
+                score >= world.target
             ) {
+
                 completeLevel();
+
+                return;
             }
         }
     });
 
+
     // Move coins
     coins.forEach(coin => {
 
-        coin.x -= settings.speed;
+        coin.x -= world.speed;
 
         if (
             !coin.collected &&
             distance(
-                bird.x,
-                bird.y,
+                player.x,
+                player.y,
                 coin.x,
                 coin.y
             ) <
-            bird.radius + coin.radius
+            player.radius +
+            coin.radius
         ) {
 
             coin.collected = true;
@@ -429,28 +549,60 @@ function update() {
                 totalCoins;
 
             localStorage.setItem(
-                "totalCoins",
+                "memeFlyCoins",
                 totalCoins
+            );
+
+            createParticles(
+                coin.x,
+                coin.y,
+                "#ffe600",
+                15
             );
         }
     });
 
+
+    // Particles
+    particles.forEach(p => {
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+        p.vy += 0.08;
+
+        p.life -= 0.025;
+    });
+
+
+    particles =
+        particles.filter(
+            p => p.life > 0
+        );
+
+
     // Remove old objects
     pipes =
-        pipes.filter(pipe =>
-            pipe.x + pipe.width > -100
+        pipes.filter(
+            pipe =>
+                pipe.x + pipe.width > -100
         );
 
     coins =
-        coins.filter(coin =>
-            coin.x > -50 &&
-            !coin.collected
+        coins.filter(
+            coin =>
+                coin.x > -50 &&
+                !coin.collected
         );
 
-    // Ground / ceiling
+
+    // Ceiling / ground
     if (
-        bird.y - bird.radius < 0 ||
-        bird.y + bird.radius > canvas.height
+        player.y -
+        player.radius < 0 ||
+        player.y +
+        player.radius >
+        canvas.height
     ) {
 
         endGame();
@@ -458,21 +610,30 @@ function update() {
         return;
     }
 
+
     // Collision
     for (const pipe of pipes) {
 
-        const hitHorizontal =
-            bird.x + bird.radius > pipe.x &&
-            bird.x - bird.radius <
-            pipe.x + pipe.width;
+        const horizontal =
+            player.x +
+            player.radius >
+            pipe.x &&
+            player.x -
+            player.radius <
+            pipe.x +
+            pipe.width;
 
-        const hitVertical =
-            bird.y - bird.radius < pipe.top ||
-            bird.y + bird.radius > pipe.bottom;
+        const vertical =
+            player.y -
+            player.radius <
+            pipe.top ||
+            player.y +
+            player.radius >
+            pipe.bottom;
 
         if (
-            hitHorizontal &&
-            hitVertical
+            horizontal &&
+            vertical
         ) {
 
             endGame();
@@ -483,24 +644,76 @@ function update() {
 }
 
 
-// ===============================
+// ============================================================
 // DISTANCE
-// ===============================
+// ============================================================
 
-function distance(x1, y1, x2, y2) {
+function distance(
+    x1,
+    y1,
+    x2,
+    y2
+) {
 
     const dx = x1 - x2;
     const dy = y1 - y2;
 
-    return Math.sqrt(dx * dx + dy * dy);
+    return Math.sqrt(
+        dx * dx +
+        dy * dy
+    );
 }
 
 
-// ===============================
+// ============================================================
+// PARTICLES
+// ============================================================
+
+function createParticles(
+    x,
+    y,
+    color,
+    amount
+) {
+
+    for (
+        let i = 0;
+        i < amount;
+        i++
+    ) {
+
+        particles.push({
+
+            x,
+            y,
+
+            vx:
+                (Math.random() - 0.5) *
+                5,
+
+            vy:
+                (Math.random() - 0.5) *
+                5,
+
+            size:
+                Math.random() * 5 + 2,
+
+            color,
+
+            life: 1
+        });
+    }
+}
+
+
+// ============================================================
 // DRAW BACKGROUND
-// ===============================
+// ============================================================
 
 function drawBackground() {
+
+    const world =
+        worlds[currentLevel - 1];
 
     const gradient =
         ctx.createLinearGradient(
@@ -512,12 +725,12 @@ function drawBackground() {
 
     gradient.addColorStop(
         0,
-        "#79d7ff"
+        world.sky
     );
 
     gradient.addColorStop(
         1,
-        "#dff8ff"
+        world.sky2
     );
 
     ctx.fillStyle = gradient;
@@ -529,57 +742,282 @@ function drawBackground() {
         canvas.height
     );
 
-    // Clouds
+
+    // World-specific background
+    if (currentLevel === 1) {
+        drawSwamp();
+    }
+
+    if (currentLevel === 2) {
+        drawCity();
+    }
+
+    if (currentLevel === 3) {
+        drawSpace();
+    }
+
+    if (currentLevel === 4) {
+        drawInternet();
+    }
+
+    if (currentLevel === 5) {
+        drawDimension();
+    }
+
+    if (currentLevel === 6) {
+        drawUniverse();
+    }
+}
+
+
+// ============================================================
+// PEPE SWAMP
+// ============================================================
+
+function drawSwamp() {
+
     ctx.fillStyle =
-        "rgba(255,255,255,0.75)";
+        "rgba(25,100,30,0.25)";
 
-    drawCloud(120, 120, 1);
-    drawCloud(450, 190, 0.8);
-    drawCloud(750, 100, 1.2);
+    for (
+        let i = 0;
+        i < 12;
+        i++
+    ) {
+
+        const x =
+            (i * 180 -
+            performance.now() * 0.02) %
+            canvas.width;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,
+            canvas.height - 70,
+            55,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+    }
 }
 
 
-function drawCloud(x, y, scale) {
+// ============================================================
+// SHIB CITY
+// ============================================================
 
-    ctx.beginPath();
+function drawCity() {
 
-    ctx.arc(
-        x,
-        y,
-        25 * scale,
-        0,
-        Math.PI * 2
-    );
+    ctx.fillStyle =
+        "rgba(80,0,20,0.3)";
 
-    ctx.arc(
-        x + 30 * scale,
-        y - 10 * scale,
-        35 * scale,
-        0,
-        Math.PI * 2
-    );
+    for (
+        let i = 0;
+        i < 10;
+        i++
+    ) {
 
-    ctx.arc(
-        x + 65 * scale,
-        y,
-        25 * scale,
-        0,
-        Math.PI * 2
-    );
+        const x =
+            i * 150;
 
-    ctx.fill();
+        const h =
+            80 +
+            (i % 4) * 35;
+
+        ctx.fillRect(
+            x,
+            canvas.height - h,
+            100,
+            h
+        );
+    }
+
+    // Lanterns
+    ctx.fillStyle =
+        "#ffd45a";
+
+    for (
+        let i = 0;
+        i < 7;
+        i++
+    ) {
+
+        ctx.beginPath();
+
+        ctx.arc(
+            i * 150 + 60,
+            100 + (i % 2) * 70,
+            13,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+    }
 }
 
 
-// ===============================
+// ============================================================
+// DOGE SPACE
+// ============================================================
+
+function drawSpace() {
+
+    ctx.fillStyle =
+        "white";
+
+    for (
+        let i = 0;
+        i < 80;
+        i++
+    ) {
+
+        const x =
+            (i * 137) %
+            canvas.width;
+
+        const y =
+            (i * 83) %
+            canvas.height;
+
+        const size =
+            (i % 3) + 1;
+
+        ctx.fillRect(
+            x,
+            y,
+            size,
+            size
+        );
+    }
+}
+
+
+// ============================================================
+// TROLL INTERNET
+// ============================================================
+
+function drawInternet() {
+
+    ctx.strokeStyle =
+        "rgba(81,255,189,0.15)";
+
+    ctx.lineWidth = 2;
+
+    for (
+        let x = 0;
+        x < canvas.width;
+        x += 70
+    ) {
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            x,
+            0
+        );
+
+        ctx.lineTo(
+            x + 150,
+            canvas.height
+        );
+
+        ctx.stroke();
+    }
+}
+
+
+// ============================================================
+// 67 DIMENSION
+// ============================================================
+
+function drawDimension() {
+
+    ctx.strokeStyle =
+        "rgba(0,234,255,0.25)";
+
+    ctx.lineWidth = 1;
+
+    const centerX =
+        canvas.width / 2;
+
+    const centerY =
+        canvas.height / 2;
+
+    for (
+        let i = 0;
+        i < 15;
+        i++
+    ) {
+
+        const size =
+            i * 90 +
+            50;
+
+        ctx.strokeRect(
+            centerX - size / 2,
+            centerY - size / 2,
+            size,
+            size
+        );
+    }
+}
+
+
+// ============================================================
+// FINAL UNIVERSE
+// ============================================================
+
+function drawUniverse() {
+
+    ctx.fillStyle =
+        "rgba(255,255,255,0.8)";
+
+    for (
+        let i = 0;
+        i < 100;
+        i++
+    ) {
+
+        const x =
+            (i * 97) %
+            canvas.width;
+
+        const y =
+            (i * 61) %
+            canvas.height;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,
+            y,
+            (i % 3) + 1,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+    }
+}
+
+
+// ============================================================
 // DRAW PIPES
-// ===============================
+// ============================================================
 
 function drawPipes() {
 
+    const world =
+        worlds[currentLevel - 1];
+
     pipes.forEach(pipe => {
 
-        ctx.fillStyle = "#111";
+        ctx.fillStyle =
+            world.obstacle;
 
         // Top
         ctx.fillRect(
@@ -594,97 +1032,131 @@ function drawPipes() {
             pipe.x,
             pipe.bottom,
             pipe.width,
-            canvas.height - pipe.bottom
+            canvas.height -
+            pipe.bottom
         );
 
-        // Pipe edges
-        ctx.fillStyle = "#222";
+        // Bright edges
+        ctx.fillStyle =
+            world.accent;
 
         ctx.fillRect(
-            pipe.x - 8,
-            pipe.top - 18,
-            pipe.width + 16,
-            18
+            pipe.x - 7,
+            pipe.top - 12,
+            pipe.width + 14,
+            12
         );
 
         ctx.fillRect(
-            pipe.x - 8,
+            pipe.x - 7,
             pipe.bottom,
-            pipe.width + 16,
-            18
+            pipe.width + 14,
+            12
         );
     });
 }
 
 
-// ===============================
+// ============================================================
 // DRAW COINS
-// ===============================
+// ============================================================
 
 function drawCoins() {
 
     coins.forEach(coin => {
 
+        if (coin.collected) return;
+
+        ctx.save();
+
+        ctx.translate(
+            coin.x,
+            coin.y
+        );
+
+        const scale =
+            0.85 +
+            Math.sin(
+                performance.now() * 0.006
+            ) * 0.15;
+
+        ctx.scale(
+            scale,
+            scale
+        );
+
         ctx.beginPath();
 
         ctx.arc(
-            coin.x,
-            coin.y,
+            0,
+            0,
             coin.radius,
             0,
             Math.PI * 2
         );
 
-        ctx.fillStyle = "#ffd700";
+        ctx.fillStyle =
+            "#ffe600";
 
         ctx.fill();
 
-        ctx.strokeStyle = "#000";
+        ctx.strokeStyle =
+            "#8a6500";
 
         ctx.lineWidth = 3;
 
         ctx.stroke();
 
-        ctx.fillStyle = "#000";
+        ctx.fillStyle =
+            "#8a6500";
 
-        ctx.font = "bold 12px Arial";
+        ctx.font =
+            "bold 15px Arial";
 
-        ctx.textAlign = "center";
+        ctx.textAlign =
+            "center";
 
-        ctx.textBaseline = "middle";
+        ctx.textBaseline =
+            "middle";
 
         ctx.fillText(
             "$",
-            coin.x,
-            coin.y
+            0,
+            1
         );
+
+        ctx.restore();
     });
 }
 
 
-// ===============================
+// ============================================================
 // DRAW PLAYER
-// ===============================
+// ============================================================
 
-function drawBird() {
+function drawPlayer() {
+
+    const world =
+        worlds[currentLevel - 1];
 
     ctx.save();
 
     ctx.translate(
-        bird.x,
-        bird.y
+        player.x,
+        player.y
     );
 
     const rotation =
-        Math.min(
-            Math.max(
-                bird.velocity * 0.06,
-                -0.4
-            ),
-            0.8
+        Math.max(
+            -0.5,
+            Math.min(
+                0.8,
+                player.velocity * 0.06
+            )
         );
 
     ctx.rotate(rotation);
+
 
     // Body
     ctx.beginPath();
@@ -692,69 +1164,100 @@ function drawBird() {
     ctx.arc(
         0,
         0,
-        bird.radius,
+        player.radius,
         0,
         Math.PI * 2
     );
 
-    ctx.fillStyle = "#ffffff";
+    ctx.fillStyle =
+        "white";
 
     ctx.fill();
 
-    ctx.strokeStyle = "#000";
+    ctx.strokeStyle =
+        "#111";
 
     ctx.lineWidth = 4;
 
     ctx.stroke();
 
-    // Eye
+
+    // Meme face
+    ctx.font =
+        "30px Arial";
+
+    ctx.textAlign =
+        "center";
+
+    ctx.textBaseline =
+        "middle";
+
+    ctx.fillText(
+        world.emoji,
+        0,
+        2
+    );
+
+
+    // Wing
     ctx.beginPath();
 
-    ctx.arc(
+    ctx.ellipse(
+        -15,
         8,
-        -7,
-        6,
+        12,
+        7,
+        -0.3,
         0,
         Math.PI * 2
     );
 
-    ctx.fillStyle = "#000";
-
-    ctx.fill();
-
-    // Beak
-    ctx.beginPath();
-
-    ctx.moveTo(
-        18,
-        2
-    );
-
-    ctx.lineTo(
-        34,
-        8
-    );
-
-    ctx.lineTo(
-        18,
-        13
-    );
-
-    ctx.closePath();
-
-    ctx.fillStyle = "#ff9d00";
+    ctx.fillStyle =
+        world.accent;
 
     ctx.fill();
 
     ctx.stroke();
 
+
     ctx.restore();
 }
 
 
-// ===============================
-// DRAW
-// ===============================
+// ============================================================
+// DRAW PARTICLES
+// ============================================================
+
+function drawParticles() {
+
+    particles.forEach(p => {
+
+        ctx.globalAlpha =
+            p.life;
+
+        ctx.fillStyle =
+            p.color;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            p.x,
+            p.y,
+            p.size,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+    });
+
+    ctx.globalAlpha = 1;
+}
+
+
+// ============================================================
+// DRAW EVERYTHING
+// ============================================================
 
 function draw() {
 
@@ -764,13 +1267,15 @@ function draw() {
 
     drawCoins();
 
-    drawBird();
+    drawParticles();
+
+    drawPlayer();
 }
 
 
-// ===============================
+// ============================================================
 // GAME LOOP
-// ===============================
+// ============================================================
 
 function gameLoop() {
 
@@ -780,7 +1285,7 @@ function gameLoop() {
 
     if (gameRunning) {
 
-        animation =
+        animationFrame =
             requestAnimationFrame(
                 gameLoop
             );
@@ -788,9 +1293,9 @@ function gameLoop() {
 }
 
 
-// ===============================
+// ============================================================
 // GAME OVER
-// ===============================
+// ============================================================
 
 function endGame() {
 
@@ -804,20 +1309,23 @@ function endGame() {
         bestScore = score;
 
         localStorage.setItem(
-            "bestScore",
+            "memeFlyBest",
             bestScore
         );
     }
 
-    finalScore.textContent = score;
+    finalScore.textContent =
+        score;
 
-    gameOver.classList.remove("hidden");
+    gameOver.classList.remove(
+        "hidden"
+    );
 }
 
 
-// ===============================
+// ============================================================
 // LEVEL COMPLETE
-// ===============================
+// ============================================================
 
 function completeLevel() {
 
@@ -826,70 +1334,83 @@ function completeLevel() {
     gameFinished = true;
     gameRunning = false;
 
-    completeScore.textContent = score;
+    completeScore.textContent =
+        score;
 
+
+    // Unlock next world
     if (
         currentLevel >= unlockedLevel &&
-        currentLevel < levels.length
+        currentLevel < worlds.length
     ) {
 
         unlockedLevel =
             currentLevel + 1;
 
         localStorage.setItem(
-            "unlockedLevel",
+            "memeFlyUnlocked",
             unlockedLevel
         );
     }
 
-    if (
-        score > bestScore
-    ) {
+
+    if (score > bestScore) {
 
         bestScore = score;
 
         localStorage.setItem(
-            "bestScore",
+            "memeFlyBest",
             bestScore
         );
     }
 
+
     if (
         currentLevel <
-        levels.length
+        worlds.length
     ) {
 
-        nextBtn.classList.remove("hidden");
+        nextBtn.classList.remove(
+            "hidden"
+        );
 
     } else {
 
-        nextBtn.classList.add("hidden");
+        nextBtn.classList.add(
+            "hidden"
+        );
     }
 
-    levelComplete.classList.remove("hidden");
+
+    levelComplete.classList.remove(
+        "hidden"
+    );
 }
 
 
-// ===============================
-// NEXT LEVEL
-// ===============================
+// ============================================================
+// NEXT WORLD
+// ============================================================
 
-nextBtn.addEventListener("click", () => {
+nextBtn.addEventListener(
+    "click",
+    () => {
 
-    if (
-        currentLevel <
-        levels.length
-    ) {
+        if (
+            currentLevel <
+            worlds.length
+        ) {
 
-        startGame(
-            currentLevel + 1
-        );
+            startGame(
+                currentLevel + 1
+            );
+        }
     }
-});
+);
 
 
-// ===============================
+// ============================================================
 // START
-// ===============================
+// ============================================================
 
 showMenu();
