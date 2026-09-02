@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>MEME FLY</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div id="app">
+
+        <div id="menu">
+
+            <div class="logo">
+                MEME<br>
+                <span>FLY</span>
+            </div>
+
+            <p class="tagline">
+                THE MEMECOIN ARCADE
+            </p>
+
+            <button id="playBtn">
+                PLAY
+            </button>
+
+            <button id="levelsBtn">
+                LEVELS
+            </button>
+
+            <div class="stats">
+                <div>
+                    🏆 BEST
+                    <strong id="bestScore">0</strong>
+                </div>
+
+                <div>
+                    🪙 COINS
+                    <strong id="coins">0</strong>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="levelsScreen" class="hidden">
+
+            <h1>SELECT LEVEL</h1>
+
+            <div id="levelContainer"></div>
+
+            <button id="backBtn">
+                BACK
+            </button>
+
+        </div>
+
+        <div id="game" class="hidden">
+
+            <div id="hud">
+
+                <div>
+                    SCORE
+                    <strong id="score">0</strong>
+                </div>
+
+                <div>
+                    LEVEL
+                    <strong id="currentLevel">1</strong>
+                </div>
+
+                <div>
+                    🪙
+                    <strong id="gameCoins">0</strong>
+                </div>
+
+            </div>
+
+            <canvas id="gameCanvas"></canvas>
+
+            <div id="gameOver" class="overlay hidden">
+
+                <h2>GAME OVER</h2>
+
+                <p>
+                    SCORE:
+                    <strong id="finalScore">0</strong>
+                </p>
+
+                <button id="retryBtn">
+                    RETRY
+                </button>
+
+                <button id="menuBtn">
+                    MENU
+                </button>
+
+            </div>
+
+            <div id="levelComplete" class="overlay hidden">
+
+                <h2>LEVEL COMPLETE!</h2>
+
+                <p>
+                    SCORE:
+                    <strong id="completeScore">0</strong>
+                </p>
+
+                <button id="nextBtn">
+                    NEXT LEVEL
+                </button>
+
+                <button id="levelsBtn2">
+                    LEVELS
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="game.js"></script>
+
+</body>
+</html>
