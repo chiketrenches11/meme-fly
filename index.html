@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,119 +11,213 @@
 
 <body>
 
-    <div id="app">
+<div id="app">
 
-        <div id="menu">
+    <!-- =========================
+         MAIN MENU
+    ========================== -->
 
-            <div class="logo">
-                MEME<br>
-                <span>FLY</span>
+    <section id="menu">
+
+        <div class="floating-meme meme1">🐸</div>
+        <div class="floating-meme meme2">🐕</div>
+        <div class="floating-meme meme3">🪙</div>
+        <div class="floating-meme meme4">🚀</div>
+        <div class="floating-meme meme5">💎</div>
+        <div class="floating-meme meme6">📈</div>
+
+        <div class="coin coin1">🪙</div>
+        <div class="coin coin2">🪙</div>
+        <div class="coin coin3">🪙</div>
+
+        <div class="logo">
+
+            <div>MEME</div>
+
+            <div class="logoFly">
+                FLY
             </div>
 
-            <p class="tagline">
-                THE MEMECOIN ARCADE
-            </p>
+        </div>
+
+        <div class="tagline">
+            THE MEMECOIN ARCADE
+        </div>
+
+        <div class="menuButtons">
 
             <button id="playBtn">
-                PLAY
+                🚀 PLAY
             </button>
 
             <button id="levelsBtn">
-                LEVELS
-            </button>
-
-            <div class="stats">
-                <div>
-                    🏆 BEST
-                    <strong id="bestScore">0</strong>
-                </div>
-
-                <div>
-                    🪙 COINS
-                    <strong id="coins">0</strong>
-                </div>
-            </div>
-
-        </div>
-
-        <div id="levelsScreen" class="hidden">
-
-            <h1>SELECT LEVEL</h1>
-
-            <div id="levelContainer"></div>
-
-            <button id="backBtn">
-                BACK
+                🗺️ WORLDS
             </button>
 
         </div>
 
-        <div id="game" class="hidden">
+        <div class="stats">
 
-            <div id="hud">
+            <div>
+                🏆
+                <span>BEST</span>
+                <strong id="bestScore">0</strong>
+            </div>
 
-                <div>
-                    SCORE
-                    <strong id="score">0</strong>
-                </div>
+            <div>
+                🪙
+                <span>COINS</span>
+                <strong id="coins">0</strong>
+            </div>
 
-                <div>
-                    LEVEL
-                    <strong id="currentLevel">1</strong>
-                </div>
+        </div>
 
-                <div>
-                    🪙
-                    <strong id="gameCoins">0</strong>
-                </div>
+        <div class="version">
+            MEME FLY v1.0
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         WORLD SELECT
+    ========================== -->
+
+    <section id="levelsScreen" class="hidden">
+
+        <div class="worldHeader">
+
+            <div class="smallLogo">
+                MEME FLY
+            </div>
+
+            <h1>
+                CHOOSE YOUR WORLD
+            </h1>
+
+            <p>
+                Unlock the next memecoin universe.
+            </p>
+
+        </div>
+
+        <div id="levelContainer"></div>
+
+        <button id="backBtn" class="backButton">
+            ← BACK
+        </button>
+
+    </section>
+
+
+    <!-- =========================
+         GAME
+    ========================== -->
+
+    <section id="game" class="hidden">
+
+        <canvas id="gameCanvas"></canvas>
+
+        <div id="hud">
+
+            <div class="hudItem">
+                <span>WORLD</span>
+                <strong id="currentLevel">1</strong>
+            </div>
+
+            <div class="hudItem">
+                <span>SCORE</span>
+                <strong id="score">0</strong>
+            </div>
+
+            <div class="hudItem">
+                <span>🪙</span>
+                <strong id="gameCoins">0</strong>
+            </div>
+
+        </div>
+
+
+        <!-- GAME OVER -->
+
+        <div id="gameOver" class="overlay hidden">
+
+            <div class="overlayIcon">
+                💥
+            </div>
+
+            <h2>
+                WASTED!
+            </h2>
+
+            <p>
+                Your meme journey ends here.
+            </p>
+
+            <div class="result">
+
+                SCORE
+                <strong id="finalScore">0</strong>
 
             </div>
 
-            <canvas id="gameCanvas"></canvas>
-
-            <div id="gameOver" class="overlay hidden">
-
-                <h2>GAME OVER</h2>
-
-                <p>
-                    SCORE:
-                    <strong id="finalScore">0</strong>
-                </p>
+            <div class="overlayButtons">
 
                 <button id="retryBtn">
-                    RETRY
+                    🔄 RETRY
                 </button>
 
                 <button id="menuBtn">
-                    MENU
-                </button>
-
-            </div>
-
-            <div id="levelComplete" class="overlay hidden">
-
-                <h2>LEVEL COMPLETE!</h2>
-
-                <p>
-                    SCORE:
-                    <strong id="completeScore">0</strong>
-                </p>
-
-                <button id="nextBtn">
-                    NEXT LEVEL
-                </button>
-
-                <button id="levelsBtn2">
-                    LEVELS
+                    🏠 MENU
                 </button>
 
             </div>
 
         </div>
 
-    </div>
 
-    <script src="game.js"></script>
+        <!-- LEVEL COMPLETE -->
+
+        <div id="levelComplete" class="overlay hidden">
+
+            <div class="overlayIcon">
+                🏆
+            </div>
+
+            <h2>
+                WORLD CLEARED!
+            </h2>
+
+            <p>
+                The next memecoin universe is unlocked.
+            </p>
+
+            <div class="result">
+
+                SCORE
+                <strong id="completeScore">0</strong>
+
+            </div>
+
+            <div class="overlayButtons">
+
+                <button id="nextBtn">
+                    🚀 NEXT WORLD
+                </button>
+
+                <button id="levelsBtn2">
+                    🗺️ WORLDS
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+<script src="game.js"></script>
 
 </body>
 </html>
