@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,9 +14,9 @@
 
 <div id="app">
 
-    <!-- =========================
-         MAIN MENU
-    ========================== -->
+    <!-- ========================= -->
+    <!-- MAIN MENU -->
+    <!-- ========================= -->
 
     <section id="menu">
 
@@ -31,13 +32,8 @@
         <div class="coin coin3">🪙</div>
 
         <div class="logo">
-
             <div>MEME</div>
-
-            <div class="logoFly">
-                FLY
-            </div>
-
+            <div class="logoFly">FLY</div>
         </div>
 
         <div class="tagline">
@@ -52,6 +48,18 @@
 
             <button id="levelsBtn">
                 🗺️ WORLDS
+            </button>
+
+            <button id="shopBtn">
+                🛍️ SHOP
+            </button>
+
+            <button id="closetBtn">
+                👕 CLOSET
+            </button>
+
+            <button id="missionsBtn">
+                🎯 MISSIONS
             </button>
 
         </div>
@@ -79,9 +87,9 @@
     </section>
 
 
-    <!-- =========================
-         WORLD SELECT
-    ========================== -->
+    <!-- ========================= -->
+    <!-- WORLD SELECT -->
+    <!-- ========================= -->
 
     <section id="levelsScreen" class="hidden">
 
@@ -110,9 +118,144 @@
     </section>
 
 
-    <!-- =========================
-         GAME
-    ========================== -->
+    <!-- ========================= -->
+    <!-- SHOP -->
+    <!-- ========================= -->
+
+    <section id="shopScreen" class="hidden">
+
+        <div class="pageHeader">
+
+            <div class="smallLogo">
+                MEME FLY
+            </div>
+
+            <h1>
+                🛍️ SHOP
+            </h1>
+
+            <p>
+                Buy accessories with your coins.
+            </p>
+
+            <div class="shopBalance">
+                🪙 <strong id="shopCoins">0</strong>
+            </div>
+
+        </div>
+
+        <div id="shopContainer"></div>
+
+        <button id="shopBackBtn" class="backButton">
+            ← BACK
+        </button>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- CLOSET -->
+    <!-- ========================= -->
+
+    <section id="closetScreen" class="hidden">
+
+        <div class="pageHeader">
+
+            <div class="smallLogo">
+                MEME FLY
+            </div>
+
+            <h1>
+                👕 CLOSET
+            </h1>
+
+            <p>
+                Customize your unlocked meme.
+            </p>
+
+        </div>
+
+        <div class="closetLayout">
+
+            <!-- CHARACTER PREVIEW -->
+
+            <div class="characterPreview">
+
+                <h2>
+                    YOUR MEME
+                </h2>
+
+                <canvas id="closetCanvas" width="300" height="300"></canvas>
+
+                <div id="equippedInfo">
+                    NO ACCESSORIES
+                </div>
+
+            </div>
+
+
+            <!-- CUSTOMIZATION -->
+
+            <div class="customizationPanel">
+
+                <h2>
+                    MEME
+                </h2>
+
+                <div id="closetMemes"></div>
+
+
+                <h2>
+                    ACCESSORIES
+                </h2>
+
+                <div id="closetAccessories"></div>
+
+            </div>
+
+        </div>
+
+        <button id="closetBackBtn" class="backButton">
+            ← BACK
+        </button>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- MISSIONS -->
+    <!-- ========================= -->
+
+    <section id="missionsScreen" class="hidden">
+
+        <div class="pageHeader">
+
+            <div class="smallLogo">
+                MEME FLY
+            </div>
+
+            <h1>
+                🎯 MISSIONS
+            </h1>
+
+            <p>
+                Complete missions and earn exclusive rewards.
+            </p>
+
+        </div>
+
+        <div id="missionsContainer"></div>
+
+        <button id="missionsBackBtn" class="backButton">
+            ← BACK
+        </button>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- GAME -->
+    <!-- ========================= -->
 
     <section id="game" class="hidden">
 
@@ -121,24 +264,49 @@
         <div id="hud">
 
             <div class="hudItem">
-                <span>WORLD</span>
-                <strong id="currentLevel">1</strong>
+
+                <span>
+                    WORLD
+                </span>
+
+                <strong id="currentLevel">
+                    1
+                </strong>
+
             </div>
 
-            <div class="hudItem">
-                <span>SCORE</span>
-                <strong id="score">0</strong>
-            </div>
 
             <div class="hudItem">
-                <span>🪙</span>
-                <strong id="gameCoins">0</strong>
+
+                <span>
+                    SCORE
+                </span>
+
+                <strong id="score">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="hudItem">
+
+                <span>
+                    🪙
+                </span>
+
+                <strong id="gameCoins">
+                    0
+                </strong>
+
             </div>
 
         </div>
 
 
+        <!-- ========================= -->
         <!-- GAME OVER -->
+        <!-- ========================= -->
 
         <div id="gameOver" class="overlay hidden">
 
@@ -157,7 +325,10 @@
             <div class="result">
 
                 SCORE
-                <strong id="finalScore">0</strong>
+
+                <strong id="finalScore">
+                    0
+                </strong>
 
             </div>
 
@@ -176,7 +347,9 @@
         </div>
 
 
+        <!-- ========================= -->
         <!-- LEVEL COMPLETE -->
+        <!-- ========================= -->
 
         <div id="levelComplete" class="overlay hidden">
 
@@ -195,7 +368,10 @@
             <div class="result">
 
                 SCORE
-                <strong id="completeScore">0</strong>
+
+                <strong id="completeScore">
+                    0
+                </strong>
 
             </div>
 
@@ -217,7 +393,9 @@
 
 </div>
 
+
 <script src="game.js"></script>
 
 </body>
 </html>
+```
