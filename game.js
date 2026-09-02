@@ -1,9 +1,16 @@
 // ============================================================
-// MEME FLY — WORLD EDITION
+// MEME FLY
+// Cada nível = uma skin/personagem diferente
+// Cada nível só desbloqueia depois de completar o anterior
 // ============================================================
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
+
+
+// ============================================================
+// ELEMENTOS HTML
+// ============================================================
 
 const menu = document.getElementById("menu");
 const levelsScreen = document.getElementById("levelsScreen");
@@ -33,114 +40,175 @@ const completeScore = document.getElementById("completeScore");
 
 
 // ============================================================
-// WORLDS
+// MUNDOS
 // ============================================================
 
 const worlds = [
+
     {
         name: "PEPE",
         title: "PEPE SWAMP",
-        emoji: "🐸",
-        sky: "#78d84b",
-        sky2: "#c9f56a",
-        ground: "#315c22",
-        obstacle: "#174f29",
-        accent: "#48ff66",
+
+        skin: "pepe",
+
+        sky1: "#8ee86b",
+        sky2: "#2b9c50",
+
+        ground: "#194d2a",
+        obstacle: "#14552d",
+        obstacleLight: "#2e8b45",
+
+        accent: "#62ff70",
+
         gravity: 0.42,
-        jump: -7.4,
-        speed: 3.1,
+        jump: -7.5,
+        speed: 3.2,
         gap: 190,
+
         target: 8
     },
+
 
     {
         name: "SHIB",
         title: "SHIB CITY",
-        emoji: "🐕",
-        sky: "#ff5548",
-        sky2: "#ffd0a6",
-        ground: "#751d28",
-        obstacle: "#8d1725",
-        accent: "#fff1d0",
+
+        skin: "shib",
+
+        sky1: "#ff5b55",
+        sky2: "#ffb58e",
+
+        ground: "#641c29",
+        obstacle: "#8d2031",
+        obstacleLight: "#d33d4b",
+
+        accent: "#fff0d0",
+
         gravity: 0.44,
-        jump: -7.5,
-        speed: 3.4,
-        gap: 180,
+        jump: -7.6,
+        speed: 3.5,
+        gap: 185,
+
         target: 10
     },
+
 
     {
         name: "DOGE",
         title: "DOGE SPACE",
-        emoji: "🐶",
-        sky: "#172052",
-        sky2: "#5b3ca8",
-        ground: "#11152f",
-        obstacle: "#25245f",
-        accent: "#ffe04a",
+
+        skin: "doge",
+
+        sky1: "#101942",
+        sky2: "#503d91",
+
+        ground: "#101329",
+        obstacle: "#27276b",
+        obstacleLight: "#4848a5",
+
+        accent: "#ffe044",
+
         gravity: 0.46,
-        jump: -7.6,
-        speed: 3.7,
-        gap: 175,
+        jump: -7.7,
+        speed: 3.8,
+        gap: 180,
+
         target: 12
     },
+
 
     {
         name: "TROLL",
         title: "TROLL INTERNET",
-        emoji: "👹",
-        sky: "#7d27c7",
-        sky2: "#12e8a4",
-        ground: "#26113d",
-        obstacle: "#40156d",
-        accent: "#51ffbd",
+
+        skin: "troll",
+
+        sky1: "#7124bd",
+        sky2: "#0acb9b",
+
+        ground: "#21102f",
+        obstacle: "#42126d",
+        obstacleLight: "#7c28a8",
+
+        accent: "#50ffb5",
+
         gravity: 0.48,
-        jump: -7.7,
-        speed: 4,
-        gap: 170,
+        jump: -7.8,
+        speed: 4.1,
+        gap: 175,
+
         target: 14
     },
+
 
     {
         name: "67",
         title: "67 DIMENSION",
-        emoji: "🗿",
-        sky: "#071b35",
-        sky2: "#087eaa",
-        ground: "#061225",
-        obstacle: "#0b3156",
+
+        skin: "sixtyseven",
+
+        sky1: "#06152e",
+        sky2: "#087da8",
+
+        ground: "#06101e",
+        obstacle: "#0a3155",
+        obstacleLight: "#0b6388",
+
         accent: "#00eaff",
+
         gravity: 0.50,
-        jump: -7.8,
-        speed: 4.3,
-        gap: 165,
+        jump: -7.9,
+        speed: 4.4,
+        gap: 170,
+
         target: 16
     },
 
+
     {
-        name: "FINAL",
-        title: "MEME UNIVERSE",
-        emoji: "🚀",
-        sky: "#080018",
-        sky2: "#5b087d",
-        ground: "#150025",
-        obstacle: "#30034d",
-        accent: "#ff48e8",
+        name: "WIF",
+        title: "WIF UNIVERSE",
+
+        skin: "wif",
+
+        sky1: "#32105f",
+        sky2: "#c84b88",
+
+        ground: "#21102e",
+        obstacle: "#4b174f",
+        obstacleLight: "#9b337d",
+
+        accent: "#ffcb55",
+
         gravity: 0.53,
-        jump: -8,
+        jump: -8.1,
         speed: 4.7,
-        gap: 160,
+        gap: 165,
+
         target: 20
     }
+
 ];
 
 
 // ============================================================
-// SAVE DATA
+// PROGRESSO
 // ============================================================
+
+// IMPORTANTE:
+// Só o nível 1 começa desbloqueado.
 
 let unlockedLevel =
     Number(localStorage.getItem("memeFlyUnlocked")) || 1;
+
+if (unlockedLevel < 1) {
+    unlockedLevel = 1;
+}
+
+if (unlockedLevel > worlds.length) {
+    unlockedLevel = worlds.length;
+}
+
 
 let bestScore =
     Number(localStorage.getItem("memeFlyBest")) || 0;
@@ -148,31 +216,39 @@ let bestScore =
 let totalCoins =
     Number(localStorage.getItem("memeFlyCoins")) || 0;
 
-bestScoreText.textContent = bestScore;
-coinsText.textContent = totalCoins;
-
 
 // ============================================================
 // CANVAS
 // ============================================================
 
+let W = window.innerWidth;
+let H = window.innerHeight;
+
 function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+
+    W = window.innerWidth;
+    H = window.innerHeight;
+
+    canvas.width = W;
+    canvas.height = H;
 }
 
 resizeCanvas();
 
-window.addEventListener("resize", resizeCanvas);
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
 
 
 // ============================================================
-// GAME VARIABLES
+// VARIÁVEIS DO JOGO
 // ============================================================
 
 let currentLevel = 1;
 
-let player;
+let player = null;
+
 let pipes = [];
 let coins = [];
 let particles = [];
@@ -184,186 +260,439 @@ let gameRunning = false;
 let gameFinished = false;
 
 let lastPipeTime = 0;
-let animationFrame;
+
+let animationFrame = null;
 
 
 // ============================================================
-// LEVEL MENU
+// ATUALIZAR MENU
+// ============================================================
+
+function updateMenuStats() {
+
+    bestScoreText.textContent =
+        bestScore;
+
+    coinsText.textContent =
+        totalCoins;
+}
+
+updateMenuStats();
+
+
+// ============================================================
+// MENU DE NÍVEIS
 // ============================================================
 
 function createLevels() {
 
     const container =
-        document.getElementById("levelContainer");
+        document.getElementById(
+            "levelContainer"
+        );
 
     container.innerHTML = "";
 
-    worlds.forEach((world, index) => {
 
-        const levelNumber = index + 1;
+    worlds.forEach(
+        (world, index) => {
 
-        const button =
-            document.createElement("button");
+            const levelNumber =
+                index + 1;
 
-        button.className = "level";
+            const button =
+                document.createElement(
+                    "button"
+                );
 
-        if (levelNumber > unlockedLevel) {
+            button.className =
+                "level";
 
-            button.classList.add("locked");
 
-            button.innerHTML = `
-                <div class="number">🔒</div>
-                <div class="name">LOCKED</div>
-            `;
+            // --------------------------------------------
+            // NÍVEL BLOQUEADO
+            // --------------------------------------------
 
-            button.disabled = true;
+            if (
+                levelNumber >
+                unlockedLevel
+            ) {
 
-        } else {
+                button.classList.add(
+                    "locked"
+                );
 
-            button.innerHTML = `
-                <div style="font-size:34px">
-                    ${world.emoji}
-                </div>
+                button.innerHTML = `
 
-                <div class="number">
-                    ${levelNumber}
-                </div>
+                    <div
+                        class="number"
+                        style="font-size:42px"
+                    >
+                        🔒
+                    </div>
 
-                <div class="name">
-                    ${world.name}
-                </div>
-            `;
+                    <div class="name">
+                        LOCKED
+                    </div>
 
-            button.addEventListener(
-                "click",
-                () => startGame(levelNumber)
+                `;
+
+                button.disabled = true;
+            }
+
+
+            // --------------------------------------------
+            // NÍVEL DESBLOQUEADO
+            // --------------------------------------------
+
+            else {
+
+                button.innerHTML = `
+
+                    <div
+                        class="number"
+                        style="
+                            font-size:42px;
+                            line-height:1;
+                        "
+                    >
+                        ${worldIcon(world)}
+                    </div>
+
+                    <div
+                        class="number"
+                        style="
+                            font-size:22px;
+                            margin-top:4px;
+                        "
+                    >
+                        ${levelNumber}
+                    </div>
+
+                    <div class="name">
+                        ${world.name}
+                    </div>
+
+                `;
+
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        startGame(
+                            levelNumber
+                        );
+
+                    }
+                );
+            }
+
+
+            container.appendChild(
+                button
             );
         }
-
-        container.appendChild(button);
-    });
+    );
 }
+
+
+// ============================================================
+// ÍCONES DOS MUNDOS
+// ============================================================
+
+function worldIcon(world) {
+
+    if (world.skin === "pepe")
+        return "🐸";
+
+    if (world.skin === "shib")
+        return "🐕";
+
+    if (world.skin === "doge")
+        return "🐶";
+
+    if (world.skin === "troll")
+        return "👹";
+
+    if (world.skin === "sixtyseven")
+        return "🗿";
+
+    if (world.skin === "wif")
+        return "🐶";
+
+    return "🚀";
+}
+
 
 createLevels();
 
 
 // ============================================================
-// SCREENS
+// ECRÃS
 // ============================================================
 
 function showMenu() {
 
     gameRunning = false;
 
-    menu.classList.remove("hidden");
-    levelsScreen.classList.add("hidden");
-    game.classList.add("hidden");
+    cancelAnimationFrame(
+        animationFrame
+    );
 
-    gameOver.classList.add("hidden");
-    levelComplete.classList.add("hidden");
+    menu.classList.remove(
+        "hidden"
+    );
 
-    bestScoreText.textContent = bestScore;
-    coinsText.textContent = totalCoins;
+    levelsScreen.classList.add(
+        "hidden"
+    );
+
+    game.classList.add(
+        "hidden"
+    );
+
+    gameOver.classList.add(
+        "hidden"
+    );
+
+    levelComplete.classList.add(
+        "hidden"
+    );
+
+    updateMenuStats();
 }
+
 
 function showLevels() {
 
     gameRunning = false;
 
-    menu.classList.add("hidden");
-    levelsScreen.classList.remove("hidden");
-    game.classList.add("hidden");
+    cancelAnimationFrame(
+        animationFrame
+    );
+
+    menu.classList.add(
+        "hidden"
+    );
+
+    levelsScreen.classList.remove(
+        "hidden"
+    );
+
+    game.classList.add(
+        "hidden"
+    );
+
+    gameOver.classList.add(
+        "hidden"
+    );
+
+    levelComplete.classList.add(
+        "hidden"
+    );
 
     createLevels();
 }
 
-levelsBtn.addEventListener("click", showLevels);
-backBtn.addEventListener("click", showMenu);
-menuBtn.addEventListener("click", showMenu);
-levelsBtn2.addEventListener("click", showLevels);
 
-playBtn.addEventListener("click", () => {
-    startGame(unlockedLevel);
-});
+// ============================================================
+// BOTÕES
+// ============================================================
 
-retryBtn.addEventListener("click", () => {
-    startGame(currentLevel);
-});
+playBtn.addEventListener(
+    "click",
+    () => {
+
+        startGame(
+            unlockedLevel
+        );
+
+    }
+);
+
+
+levelsBtn.addEventListener(
+    "click",
+    showLevels
+);
+
+
+backBtn.addEventListener(
+    "click",
+    showMenu
+);
+
+
+menuBtn.addEventListener(
+    "click",
+    showMenu
+);
+
+
+levelsBtn2.addEventListener(
+    "click",
+    showLevels
+);
+
+
+retryBtn.addEventListener(
+    "click",
+    () => {
+
+        startGame(
+            currentLevel
+        );
+
+    }
+);
 
 
 // ============================================================
-// START GAME
+// COMEÇAR JOGO
 // ============================================================
 
 function startGame(levelNumber) {
 
-    currentLevel = levelNumber;
+    // --------------------------------------------
+    // SEGURANÇA
+    // Não deixa jogar níveis bloqueados.
+    // --------------------------------------------
+
+    if (
+        levelNumber >
+        unlockedLevel
+    ) {
+
+        levelNumber =
+            unlockedLevel;
+    }
+
+
+    currentLevel =
+        levelNumber;
+
 
     const world =
-        worlds[currentLevel - 1];
+        worlds[
+            currentLevel - 1
+        ];
+
 
     score = 0;
+
     collectedCoins = 0;
 
     pipes = [];
+
     coins = [];
+
     particles = [];
 
+
     gameRunning = true;
+
     gameFinished = false;
 
-    menu.classList.add("hidden");
-    levelsScreen.classList.add("hidden");
-    game.classList.remove("hidden");
 
-    gameOver.classList.add("hidden");
-    levelComplete.classList.add("hidden");
+    menu.classList.add(
+        "hidden"
+    );
+
+    levelsScreen.classList.add(
+        "hidden"
+    );
+
+    game.classList.remove(
+        "hidden"
+    );
+
+
+    gameOver.classList.add(
+        "hidden"
+    );
+
+    levelComplete.classList.add(
+        "hidden"
+    );
+
 
     currentLevelText.textContent =
         currentLevel;
 
-    scoreText.textContent = score;
+    scoreText.textContent =
+        score;
 
     gameCoinsText.textContent =
         collectedCoins;
 
+
+    resizeCanvas();
+
+
+    // --------------------------------------------
+    // PERSONAGEM
+    // --------------------------------------------
+
     player = {
-        x: canvas.width * 0.25,
-        y: canvas.height * 0.5,
+
+        x: W * 0.25,
+
+        y: H * 0.5,
+
         velocity: 0,
-        radius: 23
+
+        size: 58,
+
+        rotation: 0
     };
+
 
     lastPipeTime =
         performance.now() - 900;
 
-    cancelAnimationFrame(animationFrame);
+
+    cancelAnimationFrame(
+        animationFrame
+    );
+
 
     gameLoop();
 }
 
 
 // ============================================================
-// PLAYER INPUT
+// JUMP
 // ============================================================
 
 function jump() {
 
-    if (!gameRunning) return;
+    if (!gameRunning)
+        return;
+
 
     const world =
-        worlds[currentLevel - 1];
+        worlds[
+            currentLevel - 1
+        ];
+
 
     player.velocity =
         world.jump;
 
+
     createParticles(
-        player.x,
-        player.y,
+        player.x - 15,
+        player.y + 15,
         world.accent,
-        6
+        7
     );
 }
+
+
+// ============================================================
+// CONTROLOS
+// ============================================================
 
 document.addEventListener(
     "keydown",
@@ -381,10 +710,12 @@ document.addEventListener(
     }
 );
 
+
 canvas.addEventListener(
     "mousedown",
     jump
 );
+
 
 canvas.addEventListener(
     "touchstart",
@@ -395,54 +726,68 @@ canvas.addEventListener(
         jump();
 
     },
-    { passive: false }
+    {
+        passive: false
+    }
 );
 
 
 // ============================================================
-// CREATE PIPE
+// CRIAR OBSTÁCULO
 // ============================================================
 
 function createPipe() {
 
     const world =
-        worlds[currentLevel - 1];
+        worlds[
+            currentLevel - 1
+        ];
+
 
     const minTop = 70;
 
+
     const maxTop =
-        canvas.height -
+        H -
         world.gap -
-        130;
+        120;
+
 
     const top =
         Math.random() *
         (maxTop - minTop) +
         minTop;
 
+
     pipes.push({
 
-        x: canvas.width + 80,
+        x: W + 80,
 
-        width: 78,
+        width: 82,
 
-        top,
+        top: top,
 
         bottom:
-            top + world.gap,
+            top +
+            world.gap,
 
         passed: false
     });
 
+
+    // Moeda no meio do obstáculo
+
     coins.push({
 
         x:
-            canvas.width + 119,
+            W +
+            121,
 
         y:
-            top + world.gap / 2,
+            top +
+            world.gap / 2,
 
-        radius: 13,
+        radius: 14,
 
         collected: false
     });
@@ -455,12 +800,20 @@ function createPipe() {
 
 function update() {
 
-    if (!gameRunning) return;
+    if (!gameRunning)
+        return;
+
 
     const world =
-        worlds[currentLevel - 1];
+        worlds[
+            currentLevel - 1
+        ];
 
-    // Gravity
+
+    // --------------------------------------------
+    // GRAVIDADE
+    // --------------------------------------------
+
     player.velocity +=
         world.gravity;
 
@@ -468,7 +821,20 @@ function update() {
         player.velocity;
 
 
-    // Pipes
+    player.rotation =
+        Math.max(
+            -0.45,
+            Math.min(
+                0.8,
+                player.velocity * 0.055
+            )
+        );
+
+
+    // --------------------------------------------
+    // CRIAR OBSTÁCULOS
+    // --------------------------------------------
+
     if (
         performance.now() -
         lastPipeTime >
@@ -482,127 +848,177 @@ function update() {
     }
 
 
-    // Move pipes
-    pipes.forEach(pipe => {
+    // --------------------------------------------
+    // MOVER OBSTÁCULOS
+    // --------------------------------------------
 
-        pipe.x -= world.speed;
+    pipes.forEach(
+        pipe => {
 
-        if (
-            !pipe.passed &&
-            pipe.x + pipe.width <
-            player.x
-        ) {
+            pipe.x -=
+                world.speed;
 
-            pipe.passed = true;
-
-            score++;
-
-            scoreText.textContent =
-                score;
-
-            createParticles(
-                player.x,
-                player.y,
-                world.accent,
-                12
-            );
 
             if (
-                score >= world.target
+                !pipe.passed &&
+                pipe.x +
+                    pipe.width <
+                    player.x
             ) {
 
-                completeLevel();
+                pipe.passed =
+                    true;
 
-                return;
+                score++;
+
+
+                scoreText.textContent =
+                    score;
+
+
+                createParticles(
+                    player.x,
+                    player.y,
+                    world.accent,
+                    12
+                );
+
+
+                // --------------------------------
+                // TERMINOU O NÍVEL
+                // --------------------------------
+
+                if (
+                    score >=
+                    world.target
+                ) {
+
+                    completeLevel();
+
+                }
             }
         }
-    });
+    );
 
 
-    // Move coins
-    coins.forEach(coin => {
+    // --------------------------------------------
+    // MOEDAS
+    // --------------------------------------------
 
-        coin.x -= world.speed;
+    coins.forEach(
+        coin => {
 
-        if (
-            !coin.collected &&
-            distance(
-                player.x,
-                player.y,
-                coin.x,
-                coin.y
-            ) <
-            player.radius +
-            coin.radius
-        ) {
+            coin.x -=
+                world.speed;
 
-            coin.collected = true;
 
-            collectedCoins++;
+            if (
+                !coin.collected &&
+                distance(
+                    player.x,
+                    player.y,
+                    coin.x,
+                    coin.y
+                ) <
+                    35
+            ) {
 
-            totalCoins++;
+                coin.collected =
+                    true;
 
-            gameCoinsText.textContent =
-                collectedCoins;
 
-            coinsText.textContent =
-                totalCoins;
+                collectedCoins++;
 
-            localStorage.setItem(
-                "memeFlyCoins",
-                totalCoins
-            );
+                totalCoins++;
 
-            createParticles(
-                coin.x,
-                coin.y,
-                "#ffe600",
-                15
-            );
+
+                gameCoinsText.textContent =
+                    collectedCoins;
+
+
+                coinsText.textContent =
+                    totalCoins;
+
+
+                localStorage.setItem(
+                    "memeFlyCoins",
+                    totalCoins
+                );
+
+
+                createParticles(
+                    coin.x,
+                    coin.y,
+                    "#ffe600",
+                    18
+                );
+            }
         }
-    });
+    );
 
 
-    // Particles
-    particles.forEach(p => {
+    // --------------------------------------------
+    // PARTÍCULAS
+    // --------------------------------------------
 
-        p.x += p.vx;
-        p.y += p.vy;
+    particles.forEach(
+        particle => {
 
-        p.vy += 0.08;
+            particle.x +=
+                particle.vx;
 
-        p.life -= 0.025;
-    });
+            particle.y +=
+                particle.vy;
+
+            particle.vy +=
+                0.08;
+
+            particle.life -=
+                0.025;
+        }
+    );
 
 
     particles =
         particles.filter(
-            p => p.life > 0
+            particle =>
+                particle.life > 0
         );
 
 
-    // Remove old objects
+    // --------------------------------------------
+    // REMOVER OBJETOS
+    // --------------------------------------------
+
     pipes =
         pipes.filter(
             pipe =>
-                pipe.x + pipe.width > -100
+                pipe.x +
+                    pipe.width >
+                -100
         );
+
 
     coins =
         coins.filter(
             coin =>
-                coin.x > -50 &&
+                coin.x >
+                    -50 &&
                 !coin.collected
         );
 
 
-    // Ceiling / ground
+    // --------------------------------------------
+    // PAREDES
+    // --------------------------------------------
+
     if (
         player.y -
-        player.radius < 0 ||
+            player.size / 2 <
+            0 ||
         player.y +
-        player.radius >
-        canvas.height
+            player.size / 2 >
+            H
     ) {
 
         endGame();
@@ -611,25 +1027,32 @@ function update() {
     }
 
 
-    // Collision
-    for (const pipe of pipes) {
+    // --------------------------------------------
+    // COLISÕES
+    // --------------------------------------------
+
+    for (
+        const pipe of pipes
+    ) {
 
         const horizontal =
             player.x +
-            player.radius >
-            pipe.x &&
+                player.size / 2 >
+                pipe.x &&
             player.x -
-            player.radius <
-            pipe.x +
-            pipe.width;
+                player.size / 2 <
+                pipe.x +
+                    pipe.width;
+
 
         const vertical =
             player.y -
-            player.radius <
-            pipe.top ||
+                player.size / 2 <
+                pipe.top ||
             player.y +
-            player.radius >
-            pipe.bottom;
+                player.size / 2 >
+                pipe.bottom;
+
 
         if (
             horizontal &&
@@ -645,7 +1068,7 @@ function update() {
 
 
 // ============================================================
-// DISTANCE
+// DISTÂNCIA
 // ============================================================
 
 function distance(
@@ -655,8 +1078,11 @@ function distance(
     y2
 ) {
 
-    const dx = x1 - x2;
-    const dy = y1 - y2;
+    const dx =
+        x1 - x2;
+
+    const dy =
+        y1 - y2;
 
     return Math.sqrt(
         dx * dx +
@@ -666,7 +1092,7 @@ function distance(
 
 
 // ============================================================
-// PARTICLES
+// PARTÍCULAS
 // ============================================================
 
 function createParticles(
@@ -684,8 +1110,9 @@ function createParticles(
 
         particles.push({
 
-            x,
-            y,
+            x: x,
+
+            y: y,
 
             vx:
                 (Math.random() - 0.5) *
@@ -696,9 +1123,11 @@ function createParticles(
                 5,
 
             size:
-                Math.random() * 5 + 2,
+                Math.random() *
+                    5 +
+                2,
 
-            color,
+            color: color,
 
             life: 1
         });
@@ -707,77 +1136,114 @@ function createParticles(
 
 
 // ============================================================
-// DRAW BACKGROUND
+// BACKGROUND
 // ============================================================
 
 function drawBackground() {
 
     const world =
-        worlds[currentLevel - 1];
+        worlds[
+            currentLevel - 1
+        ];
+
 
     const gradient =
         ctx.createLinearGradient(
             0,
             0,
             0,
-            canvas.height
+            H
         );
+
 
     gradient.addColorStop(
         0,
-        world.sky
+        world.sky1
     );
+
 
     gradient.addColorStop(
         1,
         world.sky2
     );
 
-    ctx.fillStyle = gradient;
+
+    ctx.fillStyle =
+        gradient;
+
 
     ctx.fillRect(
         0,
         0,
-        canvas.width,
-        canvas.height
+        W,
+        H
     );
 
 
-    // World-specific background
-    if (currentLevel === 1) {
-        drawSwamp();
-    }
+    if (
+        currentLevel === 1
+    ) {
 
-    if (currentLevel === 2) {
-        drawCity();
-    }
+        drawPepeBackground();
 
-    if (currentLevel === 3) {
-        drawSpace();
-    }
+    } else if (
+        currentLevel === 2
+    ) {
 
-    if (currentLevel === 4) {
-        drawInternet();
-    }
+        drawShibBackground();
 
-    if (currentLevel === 5) {
-        drawDimension();
-    }
+    } else if (
+        currentLevel === 3
+    ) {
 
-    if (currentLevel === 6) {
-        drawUniverse();
+        drawDogeBackground();
+
+    } else if (
+        currentLevel === 4
+    ) {
+
+        drawTrollBackground();
+
+    } else if (
+        currentLevel === 5
+    ) {
+
+        draw67Background();
+
+    } else if (
+        currentLevel === 6
+    ) {
+
+        drawWifBackground();
     }
 }
 
 
 // ============================================================
-// PEPE SWAMP
+// PEPE BACKGROUND
 // ============================================================
 
-function drawSwamp() {
+function drawPepeBackground() {
+
+    // Sol
 
     ctx.fillStyle =
-        "rgba(25,100,30,0.25)";
+        "rgba(255,240,100,0.65)";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        W * 0.8,
+        H * 0.18,
+        55,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Folhas
 
     for (
         let i = 0;
@@ -786,58 +1252,140 @@ function drawSwamp() {
     ) {
 
         const x =
-            (i * 180 -
-            performance.now() * 0.02) %
-            canvas.width;
+            i * 120;
+
+        const y =
+            H -
+            90 -
+            (i % 3) * 35;
+
+
+        ctx.fillStyle =
+            "rgba(15,90,40,0.5)";
+
 
         ctx.beginPath();
 
-        ctx.arc(
+        ctx.ellipse(
             x,
-            canvas.height - 70,
-            55,
+            y,
+            45,
+            18,
+            -0.3,
             0,
             Math.PI * 2
         );
 
         ctx.fill();
     }
+
+
+    // Água
+
+    ctx.fillStyle =
+        "rgba(20,120,120,0.25)";
+
+    ctx.fillRect(
+        0,
+        H - 100,
+        W,
+        100
+    );
 }
 
 
 // ============================================================
-// SHIB CITY
+// SHIB BACKGROUND
 // ============================================================
 
-function drawCity() {
+function drawShibBackground() {
+
+    // Sol vermelho
 
     ctx.fillStyle =
-        "rgba(80,0,20,0.3)";
+        "rgba(255,240,210,0.85)";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        W * 0.5,
+        H * 0.25,
+        85,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Prédios
 
     for (
         let i = 0;
-        i < 10;
+        i < 12;
         i++
     ) {
 
         const x =
-            i * 150;
+            i * 130;
 
-        const h =
-            80 +
-            (i % 4) * 35;
+        const height =
+            100 +
+            (i % 4) * 45;
+
+
+        ctx.fillStyle =
+            "rgba(90,15,35,0.45)";
+
 
         ctx.fillRect(
             x,
-            canvas.height - h,
+            H - height,
             100,
-            h
+            height
         );
+
+
+        // Janelas
+
+        ctx.fillStyle =
+            "rgba(255,220,130,0.5)";
+
+
+        for (
+            let y =
+                H -
+                height +
+                20;
+
+            y <
+                H - 15;
+
+            y += 30
+        ) {
+
+            ctx.fillRect(
+                x + 15,
+                y,
+                12,
+                12
+            );
+
+            ctx.fillRect(
+                x + 55,
+                y,
+                12,
+                12
+            );
+        }
     }
 
-    // Lanterns
+
+    // Lanternas
+
     ctx.fillStyle =
-        "#ffd45a";
+        "#ffd45b";
+
 
     for (
         let i = 0;
@@ -848,8 +1396,10 @@ function drawCity() {
         ctx.beginPath();
 
         ctx.arc(
-            i * 150 + 60,
-            100 + (i % 2) * 70,
+            i * 170 + 60,
+            90 +
+                (i % 2) *
+                    80,
             13,
             0,
             Math.PI * 2
@@ -864,27 +1414,37 @@ function drawCity() {
 // DOGE SPACE
 // ============================================================
 
-function drawSpace() {
+function drawDogeBackground() {
+
+    // Estrelas
 
     ctx.fillStyle =
         "white";
 
+
     for (
         let i = 0;
-        i < 80;
+        i < 100;
         i++
     ) {
 
         const x =
             (i * 137) %
-            canvas.width;
+            W;
 
         const y =
             (i * 83) %
-            canvas.height;
+            H;
 
         const size =
             (i % 3) + 1;
+
+
+        ctx.globalAlpha =
+            0.4 +
+            (i % 5) *
+                0.1;
+
 
         ctx.fillRect(
             x,
@@ -893,23 +1453,65 @@ function drawSpace() {
             size
         );
     }
+
+
+    ctx.globalAlpha = 1;
+
+
+    // Planeta
+
+    ctx.fillStyle =
+        "rgba(255,220,80,0.8)";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        W * 0.78,
+        H * 0.25,
+        65,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Lua
+
+    ctx.fillStyle =
+        "rgba(190,190,255,0.7)";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        W * 0.18,
+        H * 0.2,
+        35,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
 }
 
 
 // ============================================================
-// TROLL INTERNET
+// TROLL BACKGROUND
 // ============================================================
 
-function drawInternet() {
+function drawTrollBackground() {
 
     ctx.strokeStyle =
-        "rgba(81,255,189,0.15)";
+        "rgba(80,255,190,0.18)";
 
     ctx.lineWidth = 2;
 
+
+    // Grid vertical
+
     for (
         let x = 0;
-        x < canvas.width;
+        x < W;
         x += 70
     ) {
 
@@ -921,8 +1523,132 @@ function drawInternet() {
         );
 
         ctx.lineTo(
-            x + 150,
-            canvas.height
+            x,
+            H
+        );
+
+        ctx.stroke();
+    }
+
+
+    // Grid horizontal
+
+    for (
+        let y = 0;
+        y < H;
+        y += 70
+    ) {
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            y
+        );
+
+        ctx.lineTo(
+            W,
+            y
+        );
+
+        ctx.stroke();
+    }
+
+
+    // Glitches
+
+    for (
+        let i = 0;
+        i < 15;
+        i++
+    ) {
+
+        ctx.fillStyle =
+            i % 2 === 0
+                ? "rgba(255,50,220,0.3)"
+                : "rgba(0,255,180,0.3)";
+
+
+        ctx.fillRect(
+            Math.random() * W,
+            Math.random() * H,
+            30 +
+                Math.random() * 80,
+            3
+        );
+    }
+}
+
+
+// ============================================================
+// 67 BACKGROUND
+// ============================================================
+
+function draw67Background() {
+
+    ctx.strokeStyle =
+        "rgba(0,234,255,0.25)";
+
+    ctx.lineWidth = 2;
+
+
+    const centerX =
+        W / 2;
+
+    const centerY =
+        H / 2;
+
+
+    // Dimensões
+
+    for (
+        let i = 0;
+        i < 12;
+        i++
+    ) {
+
+        const size =
+            i * 100 +
+            80;
+
+
+        ctx.strokeRect(
+            centerX -
+                size / 2,
+            centerY -
+                size / 2,
+            size,
+            size
+        );
+    }
+
+
+    // Linhas de velocidade
+
+    ctx.strokeStyle =
+        "rgba(0,220,255,0.15)";
+
+
+    for (
+        let i = 0;
+        i < 15;
+        i++
+    ) {
+
+        const y =
+            i * 70;
+
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            0,
+            y
+        );
+
+        ctx.lineTo(
+            W,
+            y
         );
 
         ctx.stroke();
@@ -931,64 +1657,31 @@ function drawInternet() {
 
 
 // ============================================================
-// 67 DIMENSION
+// WIF BACKGROUND
 // ============================================================
 
-function drawDimension() {
+function drawWifBackground() {
 
-    ctx.strokeStyle =
-        "rgba(0,234,255,0.25)";
-
-    ctx.lineWidth = 1;
-
-    const centerX =
-        canvas.width / 2;
-
-    const centerY =
-        canvas.height / 2;
-
-    for (
-        let i = 0;
-        i < 15;
-        i++
-    ) {
-
-        const size =
-            i * 90 +
-            50;
-
-        ctx.strokeRect(
-            centerX - size / 2,
-            centerY - size / 2,
-            size,
-            size
-        );
-    }
-}
-
-
-// ============================================================
-// FINAL UNIVERSE
-// ============================================================
-
-function drawUniverse() {
+    // Estrelas
 
     ctx.fillStyle =
         "rgba(255,255,255,0.8)";
 
+
     for (
         let i = 0;
-        i < 100;
+        i < 70;
         i++
     ) {
 
         const x =
-            (i * 97) %
-            canvas.width;
+            (i * 113) %
+            W;
 
         const y =
-            (i * 61) %
-            canvas.height;
+            (i * 67) %
+            H;
+
 
         ctx.beginPath();
 
@@ -1002,222 +1695,312 @@ function drawUniverse() {
 
         ctx.fill();
     }
+
+
+    // Luas/planetas
+
+    ctx.fillStyle =
+        "rgba(255,203,85,0.75)";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        W * 0.78,
+        H * 0.18,
+        75,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    ctx.fillStyle =
+        "rgba(255,100,210,0.4)";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        W * 0.15,
+        H * 0.7,
+        90,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
 }
 
 
 // ============================================================
-// DRAW PIPES
+// OBSTÁCULOS
 // ============================================================
 
 function drawPipes() {
 
     const world =
-        worlds[currentLevel - 1];
+        worlds[
+            currentLevel - 1
+        ];
 
-    pipes.forEach(pipe => {
 
-        ctx.fillStyle =
-            world.obstacle;
+    pipes.forEach(
+        pipe => {
 
-        // Top
-        ctx.fillRect(
-            pipe.x,
-            0,
-            pipe.width,
-            pipe.top
-        );
+            // Corpo
 
-        // Bottom
-        ctx.fillRect(
-            pipe.x,
-            pipe.bottom,
-            pipe.width,
-            canvas.height -
-            pipe.bottom
-        );
+            ctx.fillStyle =
+                world.obstacle;
 
-        // Bright edges
-        ctx.fillStyle =
-            world.accent;
 
-        ctx.fillRect(
-            pipe.x - 7,
-            pipe.top - 12,
-            pipe.width + 14,
-            12
-        );
+            ctx.fillRect(
+                pipe.x,
+                0,
+                pipe.width,
+                pipe.top
+            );
 
-        ctx.fillRect(
-            pipe.x - 7,
-            pipe.bottom,
-            pipe.width + 14,
-            12
-        );
-    });
+
+            ctx.fillRect(
+                pipe.x,
+                pipe.bottom,
+                pipe.width,
+                H -
+                    pipe.bottom
+            );
+
+
+            // Borda brilhante
+
+            ctx.fillStyle =
+                world.obstacleLight;
+
+
+            ctx.fillRect(
+                pipe.x - 7,
+                pipe.top - 14,
+                pipe.width + 14,
+                14
+            );
+
+
+            ctx.fillRect(
+                pipe.x - 7,
+                pipe.bottom,
+                pipe.width + 14,
+                14
+            );
+
+
+            // Detalhes
+
+            ctx.fillStyle =
+                world.accent;
+
+
+            ctx.globalAlpha =
+                0.5;
+
+
+            ctx.fillRect(
+                pipe.x + 10,
+                0,
+                5,
+                pipe.top
+            );
+
+
+            ctx.fillRect(
+                pipe.x + 10,
+                pipe.bottom,
+                5,
+                H -
+                    pipe.bottom
+            );
+
+
+            ctx.globalAlpha = 1;
+        }
+    );
 }
 
 
 // ============================================================
-// DRAW COINS
+// MOEDAS
 // ============================================================
 
 function drawCoins() {
 
-    coins.forEach(coin => {
+    coins.forEach(
+        coin => {
 
-        if (coin.collected) return;
+            if (
+                coin.collected
+            )
+                return;
 
-        ctx.save();
 
-        ctx.translate(
-            coin.x,
-            coin.y
-        );
+            ctx.save();
 
-        const scale =
-            0.85 +
-            Math.sin(
-                performance.now() * 0.006
-            ) * 0.15;
 
-        ctx.scale(
-            scale,
-            scale
-        );
+            ctx.translate(
+                coin.x,
+                coin.y
+            );
 
-        ctx.beginPath();
 
-        ctx.arc(
-            0,
-            0,
-            coin.radius,
-            0,
-            Math.PI * 2
-        );
+            const pulse =
+                0.9 +
+                Math.sin(
+                    performance.now() *
+                        0.008
+                ) *
+                    0.1;
 
-        ctx.fillStyle =
-            "#ffe600";
 
-        ctx.fill();
+            ctx.scale(
+                pulse,
+                pulse
+            );
 
-        ctx.strokeStyle =
-            "#8a6500";
 
-        ctx.lineWidth = 3;
+            // Glow
 
-        ctx.stroke();
+            ctx.shadowBlur =
+                18;
 
-        ctx.fillStyle =
-            "#8a6500";
+            ctx.shadowColor =
+                "#ffe600";
 
-        ctx.font =
-            "bold 15px Arial";
 
-        ctx.textAlign =
-            "center";
+            ctx.beginPath();
 
-        ctx.textBaseline =
-            "middle";
+            ctx.arc(
+                0,
+                0,
+                coin.radius,
+                0,
+                Math.PI * 2
+            );
 
-        ctx.fillText(
-            "$",
-            0,
-            1
-        );
 
-        ctx.restore();
-    });
+            ctx.fillStyle =
+                "#ffe600";
+
+            ctx.fill();
+
+
+            ctx.shadowBlur = 0;
+
+
+            ctx.strokeStyle =
+                "#8a6500";
+
+            ctx.lineWidth = 3;
+
+            ctx.stroke();
+
+
+            ctx.fillStyle =
+                "#8a6500";
+
+            ctx.font =
+                "bold 16px Arial";
+
+            ctx.textAlign =
+                "center";
+
+            ctx.textBaseline =
+                "middle";
+
+
+            ctx.fillText(
+                "$",
+                0,
+                1
+            );
+
+
+            ctx.restore();
+        }
+    );
 }
 
 
 // ============================================================
-// DRAW PLAYER
+// DESENHAR PERSONAGEM
 // ============================================================
 
 function drawPlayer() {
 
-    const world =
-        worlds[currentLevel - 1];
+    if (!player)
+        return;
+
 
     ctx.save();
+
 
     ctx.translate(
         player.x,
         player.y
     );
 
-    const rotation =
-        Math.max(
-            -0.5,
-            Math.min(
-                0.8,
-                player.velocity * 0.06
-            )
-        );
 
-    ctx.rotate(rotation);
-
-
-    // Body
-    ctx.beginPath();
-
-    ctx.arc(
-        0,
-        0,
-        player.radius,
-        0,
-        Math.PI * 2
-    );
-
-    ctx.fillStyle =
-        "white";
-
-    ctx.fill();
-
-    ctx.strokeStyle =
-        "#111";
-
-    ctx.lineWidth = 4;
-
-    ctx.stroke();
-
-
-    // Meme face
-    ctx.font =
-        "30px Arial";
-
-    ctx.textAlign =
-        "center";
-
-    ctx.textBaseline =
-        "middle";
-
-    ctx.fillText(
-        world.emoji,
-        0,
-        2
+    ctx.rotate(
+        player.rotation
     );
 
 
-    // Wing
-    ctx.beginPath();
+    const world =
+        worlds[
+            currentLevel - 1
+        ];
 
-    ctx.ellipse(
-        -15,
-        8,
-        12,
-        7,
-        -0.3,
-        0,
-        Math.PI * 2
-    );
 
-    ctx.fillStyle =
-        world.accent;
+    // Cada skin é completamente diferente
 
-    ctx.fill();
+    if (
+        world.skin ===
+        "pepe"
+    ) {
 
-    ctx.stroke();
+        drawPepe();
+
+    } else if (
+        world.skin ===
+        "shib"
+    ) {
+
+        drawShib();
+
+    } else if (
+        world.skin ===
+        "doge"
+    ) {
+
+        drawDoge();
+
+    } else if (
+        world.skin ===
+        "troll"
+    ) {
+
+        drawTroll();
+
+    } else if (
+        world.skin ===
+        "sixtyseven"
+    ) {
+
+        draw67();
+
+    } else if (
+        world.skin ===
+        "wif"
+    ) {
+
+        drawWif();
+    }
 
 
     ctx.restore();
@@ -1225,38 +2008,1235 @@ function drawPlayer() {
 
 
 // ============================================================
-// DRAW PARTICLES
+// PEPE SKIN
+// ============================================================
+
+function drawPepe() {
+
+    // Corpo verde
+
+    ctx.fillStyle =
+        "#62b44b";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        5,
+        27,
+        24,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Cabeça
+
+    ctx.fillStyle =
+        "#76c957";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        -5,
+        25,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Olhos
+
+    ctx.fillStyle =
+        "#dff5d8";
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        -9,
+        -14,
+        9,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.arc(
+        9,
+        -14,
+        9,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    ctx.fillStyle =
+        "#111";
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        -9,
+        -14,
+        4,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.arc(
+        9,
+        -14,
+        4,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Boca Pepe
+
+    ctx.fillStyle =
+        "#301c18";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        8,
+        16,
+        8,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Língua
+
+    ctx.fillStyle =
+        "#e87979";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        11,
+        8,
+        4,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Asa
+
+    ctx.fillStyle =
+        "#4f9e40";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        -23,
+        12,
+        11,
+        7,
+        -0.3,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+}
+
+
+// ============================================================
+// SHIB SKIN
+// ============================================================
+
+function drawShib() {
+
+    // Corpo
+
+    ctx.fillStyle =
+        "#d77b32";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        6,
+        27,
+        22,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Cabeça
+
+    ctx.fillStyle =
+        "#e28a3b";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        -5,
+        25,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Orelhas
+
+    ctx.fillStyle =
+        "#d36f2e";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -20,
+        -18
+    );
+
+    ctx.lineTo(
+        -22,
+        -38
+    );
+
+    ctx.lineTo(
+        -8,
+        -25
+    );
+
+    ctx.fill();
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        20,
+        -18
+    );
+
+    ctx.lineTo(
+        22,
+        -38
+    );
+
+    ctx.lineTo(
+        8,
+        -25
+    );
+
+    ctx.fill();
+
+
+    // Focinho
+
+    ctx.fillStyle =
+        "#fff0d2";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        5,
+        16,
+        12,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Olhos
+
+    ctx.fillStyle =
+        "#111";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        -9,
+        -10,
+        3.5,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.arc(
+        9,
+        -10,
+        3.5,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Nariz
+
+    ctx.fillStyle =
+        "#111";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        3,
+        5,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Boca
+
+    ctx.strokeStyle =
+        "#111";
+
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        5,
+        7,
+        0,
+        Math.PI
+    );
+
+    ctx.stroke();
+
+
+    // Asa
+
+    ctx.fillStyle =
+        "#b96329";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        -23,
+        13,
+        11,
+        7,
+        -0.3,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+}
+
+
+// ============================================================
+// DOGE SKIN
+// ============================================================
+
+function drawDoge() {
+
+    // Pescoço
+
+    ctx.fillStyle =
+        "#d49b55";
+
+    ctx.fillRect(
+        -9,
+        15,
+        18,
+        15
+    );
+
+
+    // Cabeça
+
+    ctx.fillStyle =
+        "#dba45b";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        -2,
+        25,
+        30,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Orelhas
+
+    ctx.fillStyle =
+        "#b8793c";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -18,
+        -18
+    );
+
+    ctx.lineTo(
+        -29,
+        -35
+    );
+
+    ctx.lineTo(
+        -8,
+        -27
+    );
+
+    ctx.fill();
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        18,
+        -18
+    );
+
+    ctx.lineTo(
+        29,
+        -35
+    );
+
+    ctx.lineTo(
+        8,
+        -27
+    );
+
+    ctx.fill();
+
+
+    // Focinho
+
+    ctx.fillStyle =
+        "#f0c47b";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        8,
+        16,
+        12,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Olhos
+
+    ctx.fillStyle =
+        "#111";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        -9,
+        -8,
+        4,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.arc(
+        9,
+        -8,
+        4,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Nariz
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        4,
+        5,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Boca
+
+    ctx.strokeStyle =
+        "#111";
+
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        0,
+        8
+    );
+
+    ctx.lineTo(
+        0,
+        13
+    );
+
+    ctx.stroke();
+
+
+    // Coleira
+
+    ctx.fillStyle =
+        "#e44a38";
+
+    ctx.fillRect(
+        -18,
+        17,
+        36,
+        6
+    );
+}
+
+
+// ============================================================
+// TROLL SKIN
+// ============================================================
+
+function drawTroll() {
+
+    // Corpo
+
+    ctx.fillStyle =
+        "#3dbb62";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        8,
+        25,
+        23,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Cabeça
+
+    ctx.fillStyle =
+        "#52d873";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        -5,
+        26,
+        29,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Cabelo troll
+
+    ctx.fillStyle =
+        "#35a853";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -24,
+        -18
+    );
+
+    for (
+        let i = -24;
+        i <= 24;
+        i += 8
+    ) {
+
+        ctx.lineTo(
+            i,
+            -38 -
+                Math.abs(i % 16)
+        );
+    }
+
+    ctx.lineTo(
+        24,
+        -15
+    );
+
+    ctx.fill();
+
+
+    // Olhos
+
+    ctx.fillStyle =
+        "white";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        -9,
+        -7,
+        8,
+        11,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.ellipse(
+        9,
+        -7,
+        8,
+        11,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    ctx.fillStyle =
+        "#111";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        -9,
+        -5,
+        4,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.arc(
+        9,
+        -5,
+        4,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Nariz
+
+    ctx.fillStyle =
+        "#2f8e4c";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        3,
+        6,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Sorriso
+
+    ctx.fillStyle =
+        "#25152b";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        13,
+        18,
+        9,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Dentes
+
+    ctx.fillStyle =
+        "white";
+
+    ctx.fillRect(
+        -10,
+        9,
+        7,
+        5
+    );
+
+    ctx.fillRect(
+        3,
+        9,
+        7,
+        5
+    );
+}
+
+
+// ============================================================
+// 67 SKIN
+// ============================================================
+
+function draw67() {
+
+    // Corpo futurista
+
+    ctx.fillStyle =
+        "#16b8d4";
+
+    ctx.beginPath();
+
+    ctx.roundRect(
+        -25,
+        -24,
+        50,
+        50,
+        14
+    );
+
+    ctx.fill();
+
+
+    // Face
+
+    ctx.fillStyle =
+        "#071b35";
+
+    ctx.beginPath();
+
+    ctx.roundRect(
+        -19,
+        -15,
+        38,
+        27,
+        9
+    );
+
+    ctx.fill();
+
+
+    // Olhos digitais
+
+    ctx.fillStyle =
+        "#00eaff";
+
+    ctx.fillRect(
+        -13,
+        -8,
+        8,
+        5
+    );
+
+    ctx.fillRect(
+        5,
+        -8,
+        8,
+        5
+    );
+
+
+    // Boca
+
+    ctx.fillRect(
+        -10,
+        4,
+        20,
+        4
+    );
+
+
+    // Linhas neon
+
+    ctx.strokeStyle =
+        "#00eaff";
+
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -18,
+        -24
+    );
+
+    ctx.lineTo(
+        -10,
+        -32
+    );
+
+    ctx.lineTo(
+        10,
+        -32
+    );
+
+    ctx.lineTo(
+        18,
+        -24
+    );
+
+    ctx.stroke();
+
+
+    // Asa
+
+    ctx.fillStyle =
+        "#087da8";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -20,
+        5
+    );
+
+    ctx.lineTo(
+        -39,
+        15
+    );
+
+    ctx.lineTo(
+        -20,
+        20
+    );
+
+    ctx.fill();
+}
+
+
+// ============================================================
+// WIF SKIN
+// ============================================================
+
+function drawWif() {
+
+    // Corpo do cão
+
+    ctx.fillStyle =
+        "#d89b55";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        8,
+        26,
+        22,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Cabeça
+
+    ctx.fillStyle =
+        "#e5aa61";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        -5,
+        25,
+        27,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Orelhas
+
+    ctx.fillStyle =
+        "#c98242";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -17,
+        -19
+    );
+
+    ctx.lineTo(
+        -26,
+        -34
+    );
+
+    ctx.lineTo(
+        -6,
+        -27
+    );
+
+    ctx.fill();
+
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        17,
+        -19
+    );
+
+    ctx.lineTo(
+        26,
+        -34
+    );
+
+    ctx.lineTo(
+        6,
+        -27
+    );
+
+    ctx.fill();
+
+
+    // CHAPÉU WIF
+
+    ctx.fillStyle =
+        "#ead9bd";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        -24,
+        -25
+    );
+
+    ctx.lineTo(
+        0,
+        -38
+    );
+
+    ctx.lineTo(
+        24,
+        -25
+    );
+
+    ctx.lineTo(
+        20,
+        -18
+    );
+
+    ctx.lineTo(
+        -20,
+        -18
+    );
+
+    ctx.closePath();
+
+    ctx.fill();
+
+
+    // Aba
+
+    ctx.fillStyle =
+        "#d2bfa3";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        -18,
+        29,
+        7,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Olhos
+
+    ctx.fillStyle =
+        "#111";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        -9,
+        -5,
+        4,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.arc(
+        9,
+        -5,
+        4,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Focinho
+
+    ctx.fillStyle =
+        "#f0c27b";
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+        0,
+        7,
+        14,
+        10,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Nariz
+
+    ctx.fillStyle =
+        "#111";
+
+    ctx.beginPath();
+
+    ctx.arc(
+        0,
+        5,
+        4,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fill();
+
+
+    // Coleira
+
+    ctx.fillStyle =
+        "#ffcb55";
+
+    ctx.fillRect(
+        -18,
+        17,
+        36,
+        6
+    );
+}
+
+
+// ============================================================
+// PARTÍCULAS
 // ============================================================
 
 function drawParticles() {
 
-    particles.forEach(p => {
+    particles.forEach(
+        particle => {
 
-        ctx.globalAlpha =
-            p.life;
+            ctx.globalAlpha =
+                particle.life;
 
-        ctx.fillStyle =
-            p.color;
+            ctx.fillStyle =
+                particle.color;
 
-        ctx.beginPath();
 
-        ctx.arc(
-            p.x,
-            p.y,
-            p.size,
-            0,
-            Math.PI * 2
-        );
+            ctx.beginPath();
 
-        ctx.fill();
-    });
+            ctx.arc(
+                particle.x,
+                particle.y,
+                particle.size,
+                0,
+                Math.PI * 2
+            );
+
+            ctx.fill();
+        }
+    );
+
 
     ctx.globalAlpha = 1;
 }
 
 
 // ============================================================
-// DRAW EVERYTHING
+// TEXTO DO MUNDO
+// ============================================================
+
+function drawWorldTitle() {
+
+    const world =
+        worlds[
+            currentLevel - 1
+        ];
+
+
+    ctx.textAlign =
+        "center";
+
+    ctx.textBaseline =
+        "middle";
+
+
+    ctx.font =
+        "900 24px Arial";
+
+
+    ctx.lineWidth = 5;
+
+    ctx.strokeStyle =
+        "rgba(0,0,0,0.6)";
+
+    ctx.strokeText(
+        world.title,
+        W / 2,
+        H - 35
+    );
+
+
+    ctx.fillStyle =
+        "white";
+
+    ctx.fillText(
+        world.title,
+        W / 2,
+        H - 35
+    );
+}
+
+
+// ============================================================
+// PROGRESSO
+// ============================================================
+
+function drawProgress() {
+
+    const world =
+        worlds[
+            currentLevel - 1
+        ];
+
+
+    const width =
+        Math.min(
+            300,
+            W * 0.45
+        );
+
+
+    const height = 8;
+
+
+    const x =
+        W / 2 -
+        width / 2;
+
+
+    const y = 72;
+
+
+    // Fundo
+
+    ctx.fillStyle =
+        "rgba(0,0,0,0.4)";
+
+
+    ctx.fillRect(
+        x,
+        y,
+        width,
+        height
+    );
+
+
+    // Progresso
+
+    const progress =
+        Math.min(
+            score /
+                world.target,
+            1
+        );
+
+
+    ctx.fillStyle =
+        world.accent;
+
+
+    ctx.fillRect(
+        x,
+        y,
+        width * progress,
+        height
+    );
+}
+
+
+// ============================================================
+// DRAW
 // ============================================================
 
 function draw() {
@@ -1270,6 +3250,10 @@ function draw() {
     drawParticles();
 
     drawPlayer();
+
+    drawProgress();
+
+    drawWorldTitle();
 }
 
 
@@ -1282,6 +3266,7 @@ function gameLoop() {
     update();
 
     draw();
+
 
     if (gameRunning) {
 
@@ -1299,14 +3284,23 @@ function gameLoop() {
 
 function endGame() {
 
-    if (gameFinished) return;
+    if (gameFinished)
+        return;
+
 
     gameFinished = true;
+
     gameRunning = false;
 
-    if (score > bestScore) {
 
-        bestScore = score;
+    if (
+        score >
+        bestScore
+    ) {
+
+        bestScore =
+            score;
+
 
         localStorage.setItem(
             "memeFlyBest",
@@ -1314,38 +3308,53 @@ function endGame() {
         );
     }
 
+
     finalScore.textContent =
         score;
+
 
     gameOver.classList.remove(
         "hidden"
     );
+
+
+    updateMenuStats();
 }
 
 
 // ============================================================
-// LEVEL COMPLETE
+// COMPLETAR NÍVEL
 // ============================================================
 
 function completeLevel() {
 
-    if (gameFinished) return;
+    if (gameFinished)
+        return;
+
 
     gameFinished = true;
+
     gameRunning = false;
+
 
     completeScore.textContent =
         score;
 
 
-    // Unlock next world
+    // --------------------------------------------
+    // DESBLOQUEAR APENAS O PRÓXIMO
+    // --------------------------------------------
+
     if (
-        currentLevel >= unlockedLevel &&
-        currentLevel < worlds.length
+        currentLevel ===
+        unlockedLevel &&
+        currentLevel <
+        worlds.length
     ) {
 
         unlockedLevel =
             currentLevel + 1;
+
 
         localStorage.setItem(
             "memeFlyUnlocked",
@@ -1354,9 +3363,16 @@ function completeLevel() {
     }
 
 
-    if (score > bestScore) {
+    // Melhor score
 
-        bestScore = score;
+    if (
+        score >
+        bestScore
+    ) {
+
+        bestScore =
+            score;
+
 
         localStorage.setItem(
             "memeFlyBest",
@@ -1364,6 +3380,10 @@ function completeLevel() {
         );
     }
 
+
+    // --------------------------------------------
+    // BOTÃO NEXT
+    // --------------------------------------------
 
     if (
         currentLevel <
@@ -1385,6 +3405,9 @@ function completeLevel() {
     levelComplete.classList.remove(
         "hidden"
     );
+
+
+    updateMenuStats();
 }
 
 
@@ -1396,21 +3419,24 @@ nextBtn.addEventListener(
     "click",
     () => {
 
+        // Segurança adicional
+
         if (
             currentLevel <
-            worlds.length
+            unlockedLevel
         ) {
 
             startGame(
                 currentLevel + 1
             );
         }
+
     }
 );
 
 
 // ============================================================
-// START
+// COMEÇAR NO MENU
 // ============================================================
 
 showMenu();
