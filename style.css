@@ -1,0 +1,313 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #080808;
+    color: white;
+    overflow: hidden;
+    user-select: none;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* =========================
+   MENU
+========================= */
+
+#app {
+    width: 100vw;
+    height: 100vh;
+}
+
+#menu,
+#levelsScreen {
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    background:
+        radial-gradient(circle at 50% 20%, #303030 0%, #111 40%, #050505 100%);
+}
+
+.logo {
+    text-align: center;
+    font-size: clamp(70px, 16vw, 150px);
+    font-weight: 1000;
+    line-height: 0.75;
+    letter-spacing: -8px;
+
+    text-shadow:
+        0 8px 0 #000,
+        0 15px 30px rgba(0,0,0,0.7);
+}
+
+.logo span {
+    font-size: 0.75em;
+}
+
+.tagline {
+    margin-top: 30px;
+    margin-bottom: 45px;
+
+    color: #aaa;
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 5px;
+}
+
+#menu button,
+#levelsScreen button,
+.overlay button {
+    width: 220px;
+    padding: 17px;
+    margin: 7px;
+
+    border-radius: 14px;
+
+    background: white;
+    color: black;
+
+    font-size: 18px;
+    font-weight: 900;
+
+    transition: 0.15s;
+}
+
+#menu button:hover,
+#levelsScreen button:hover,
+.overlay button:hover {
+    transform: scale(1.05);
+}
+
+#menu button:active,
+.overlay button:active {
+    transform: scale(0.96);
+}
+
+.stats {
+    display: flex;
+    gap: 45px;
+    margin-top: 40px;
+
+    color: #888;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.stats strong {
+    display: block;
+    margin-top: 6px;
+
+    color: white;
+    font-size: 20px;
+}
+
+/* =========================
+   LEVEL SELECT
+========================= */
+
+#levelsScreen h1 {
+    margin-bottom: 35px;
+
+    font-size: clamp(35px, 8vw, 70px);
+    font-weight: 1000;
+}
+
+#levelContainer {
+    display: grid;
+    grid-template-columns: repeat(3, 120px);
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.level {
+    width: 120px;
+    height: 120px;
+
+    border-radius: 20px;
+
+    background: #181818;
+    border: 2px solid #333;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+
+    transition: 0.2s;
+}
+
+.level:hover {
+    transform: translateY(-5px);
+    border-color: white;
+}
+
+.level .number {
+    font-size: 30px;
+    font-weight: 1000;
+}
+
+.level .name {
+    margin-top: 8px;
+
+    font-size: 11px;
+    font-weight: bold;
+    color: #999;
+}
+
+.level.locked {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+/* =========================
+   GAME
+========================= */
+
+#game {
+    width: 100vw;
+    height: 100vh;
+    position: relative;
+    background: #87ceeb;
+}
+
+#gameCanvas {
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 100%;
+}
+
+#hud {
+    position: absolute;
+
+    top: 20px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    z-index: 10;
+
+    display: flex;
+    gap: 35px;
+
+    padding: 10px 20px;
+
+    border-radius: 15px;
+
+    background: rgba(0,0,0,0.45);
+
+    backdrop-filter: blur(8px);
+
+    text-align: center;
+
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+#hud strong {
+    display: block;
+
+    margin-top: 4px;
+
+    font-size: 20px;
+    color: white;
+}
+
+/* =========================
+   OVERLAYS
+========================= */
+
+.overlay {
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    z-index: 20;
+
+    width: min(90%, 400px);
+
+    padding: 40px 25px;
+
+    border-radius: 25px;
+
+    background: rgba(10,10,10,0.92);
+
+    text-align: center;
+
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+}
+
+.overlay h2 {
+    margin-bottom: 20px;
+
+    font-size: 38px;
+    font-weight: 1000;
+}
+
+.overlay p {
+    margin-bottom: 25px;
+
+    color: #aaa;
+    font-weight: bold;
+}
+
+.overlay button {
+    width: 180px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+    .logo {
+        font-size: 85px;
+    }
+
+    .tagline {
+        font-size: 10px;
+        letter-spacing: 3px;
+    }
+
+    #levelContainer {
+        grid-template-columns: repeat(2, 120px);
+    }
+
+    #hud {
+        gap: 18px;
+        padding: 8px 13px;
+    }
+
+    #hud strong {
+        font-size: 17px;
+    }
+}
