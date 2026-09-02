@@ -1,34 +1,24 @@
-```javascript
 // ============================================================
 // MEME FLY
-// WORLDS + SHOP + CLOSET + MISSIONS
+// FULL VERSION
+// WORLDS + SHOP + WARDROBE + MISSIONS
+// ============================================================
+
+
+// ============================================================
+// BASIC HTML
 // ============================================================
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-
-// ============================================================
-// HTML
-// ============================================================
-
 const menu = document.getElementById("menu");
 const levelsScreen = document.getElementById("levelsScreen");
-const shopScreen = document.getElementById("shopScreen");
-const closetScreen = document.getElementById("closetScreen");
-const missionsScreen = document.getElementById("missionsScreen");
 const game = document.getElementById("game");
 
 const playBtn = document.getElementById("playBtn");
 const levelsBtn = document.getElementById("levelsBtn");
-const shopBtn = document.getElementById("shopBtn");
-const closetBtn = document.getElementById("closetBtn");
-const missionsBtn = document.getElementById("missionsBtn");
-
 const backBtn = document.getElementById("backBtn");
-const shopBackBtn = document.getElementById("shopBackBtn");
-const closetBackBtn = document.getElementById("closetBackBtn");
-const missionsBackBtn = document.getElementById("missionsBackBtn");
 
 const retryBtn = document.getElementById("retryBtn");
 const menuBtn = document.getElementById("menuBtn");
@@ -161,7 +151,7 @@ const worlds = [
 
 
 // ============================================================
-// SHOP ITEMS
+// ACCESSORIES
 // ============================================================
 
 const accessories = [
@@ -250,7 +240,7 @@ const accessories = [
 
 
 // ============================================================
-// MISSION DATA
+// MISSIONS
 // ============================================================
 
 const missions = [
@@ -382,11 +372,14 @@ let highestScore =
     ) || 0;
 
 
-if (unlockedLevel < 1)
-    unlockedLevel = 1;
-
-if (unlockedLevel > worlds.length)
-    unlockedLevel = worlds.length;
+unlockedLevel =
+    Math.max(
+        1,
+        Math.min(
+            worlds.length,
+            unlockedLevel
+        )
+    );
 
 
 // ============================================================
@@ -443,19 +436,667 @@ function saveData() {
 
 
 // ============================================================
+// EXTRA SCREENS
+// Created automatically so your existing HTML works.
+// ============================================================
+
+function createExtraScreens() {
+
+    const app =
+        document.getElementById("app");
+
+    const menuButtons =
+        document.querySelector(".menuButtons");
+
+
+    // --------------------------------------------------------
+    // MENU BUTTONS
+    // --------------------------------------------------------
+
+    function createButton(id, text) {
+
+        let button =
+            document.getElementById(id);
+
+        if (!button) {
+
+            button =
+                document.createElement("button");
+
+            button.id = id;
+            button.textContent = text;
+
+            menuButtons.appendChild(button);
+        }
+
+        return button;
+    }
+
+
+    const shopBtn =
+        createButton(
+            "shopBtn",
+            "🛍️ SHOP"
+        );
+
+    const closetBtn =
+        createButton(
+            "closetBtn",
+            "👕 WARDROBE"
+        );
+
+    const missionsBtn =
+        createButton(
+            "missionsBtn",
+            "🎯 MISSIONS"
+        );
+
+
+    // --------------------------------------------------------
+    // SHOP SCREEN
+    // --------------------------------------------------------
+
+    let shopScreen =
+        document.getElementById(
+            "shopScreen"
+        );
+
+    if (!shopScreen) {
+
+        shopScreen =
+            document.createElement("section");
+
+        shopScreen.id =
+            "shopScreen";
+
+        shopScreen.className =
+            "hidden";
+
+        shopScreen.innerHTML = `
+
+            <div class="extraScreen">
+
+                <div class="extraHeader">
+
+                    <div class="smallLogo">
+                        MEME FLY
+                    </div>
+
+                    <h1>🛍️ MEME SHOP</h1>
+
+                    <p>
+                        Buy accessories with your coins.
+                    </p>
+
+                    <div class="screenCoins">
+                        🪙
+                        <span id="shopCoins">
+                            0
+                        </span>
+                    </div>
+
+                </div>
+
+                <div
+                    id="shopContainer"
+                    class="itemGrid"
+                ></div>
+
+                <button
+                    id="shopBackBtn"
+                    class="backButton"
+                >
+                    ← BACK
+                </button>
+
+            </div>
+        `;
+
+        app.appendChild(
+            shopScreen
+        );
+    }
+
+
+    // --------------------------------------------------------
+    // WARDROBE SCREEN
+    // --------------------------------------------------------
+
+    let closetScreen =
+        document.getElementById(
+            "closetScreen"
+        );
+
+    if (!closetScreen) {
+
+        closetScreen =
+            document.createElement("section");
+
+        closetScreen.id =
+            "closetScreen";
+
+        closetScreen.className =
+            "hidden";
+
+        closetScreen.innerHTML = `
+
+            <div class="extraScreen">
+
+                <div class="extraHeader">
+
+                    <div class="smallLogo">
+                        MEME FLY
+                    </div>
+
+                    <h1>👕 WARDROBE</h1>
+
+                    <p>
+                        Customize your unlocked meme.
+                    </p>
+
+                </div>
+
+                <div class="closetLayout">
+
+                    <div class="closetPreview">
+
+                        <canvas
+                            id="closetCanvas"
+                            width="300"
+                            height="300"
+                        ></canvas>
+
+                        <div
+                            id="equippedInfo"
+                            class="equippedInfo"
+                        >
+                            NO ACCESSORIES
+                        </div>
+
+                    </div>
+
+                    <div class="closetContent">
+
+                        <h2>YOUR MEMES</h2>
+
+                        <div
+                            id="closetMemes"
+                            class="closetMemes"
+                        ></div>
+
+                        <h2>ACCESSORIES</h2>
+
+                        <div
+                            id="closetAccessories"
+                            class="closetAccessories"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+                <button
+                    id="closetBackBtn"
+                    class="backButton"
+                >
+                    ← BACK
+                </button>
+
+            </div>
+        `;
+
+        app.appendChild(
+            closetScreen
+        );
+    }
+
+
+    // --------------------------------------------------------
+    // MISSIONS SCREEN
+    // --------------------------------------------------------
+
+    let missionsScreen =
+        document.getElementById(
+            "missionsScreen"
+        );
+
+    if (!missionsScreen) {
+
+        missionsScreen =
+            document.createElement("section");
+
+        missionsScreen.id =
+            "missionsScreen";
+
+        missionsScreen.className =
+            "hidden";
+
+        missionsScreen.innerHTML = `
+
+            <div class="extraScreen">
+
+                <div class="extraHeader">
+
+                    <div class="smallLogo">
+                        MEME FLY
+                    </div>
+
+                    <h1>🎯 MISSIONS</h1>
+
+                    <p>
+                        Complete missions and earn rewards.
+                    </p>
+
+                </div>
+
+                <div
+                    id="missionsContainer"
+                    class="missionsContainer"
+                ></div>
+
+                <button
+                    id="missionsBackBtn"
+                    class="backButton"
+                >
+                    ← BACK
+                </button>
+
+            </div>
+        `;
+
+        app.appendChild(
+            missionsScreen
+        );
+    }
+
+
+    return {
+        shopBtn,
+        closetBtn,
+        missionsBtn,
+        shopScreen,
+        closetScreen,
+        missionsScreen
+    };
+}
+
+
+const extra =
+    createExtraScreens();
+
+const shopBtn =
+    extra.shopBtn;
+
+const closetBtn =
+    extra.closetBtn;
+
+const missionsBtn =
+    extra.missionsBtn;
+
+const shopScreen =
+    extra.shopScreen;
+
+const closetScreen =
+    extra.closetScreen;
+
+const missionsScreen =
+    extra.missionsScreen;
+
+const shopBackBtn =
+    document.getElementById(
+        "shopBackBtn"
+    );
+
+const closetBackBtn =
+    document.getElementById(
+        "closetBackBtn"
+    );
+
+const missionsBackBtn =
+    document.getElementById(
+        "missionsBackBtn"
+    );
+
+
+// ============================================================
+// EXTRA CSS
+// ============================================================
+
+const extraStyle =
+    document.createElement("style");
+
+extraStyle.textContent = `
+
+    .extraScreen {
+        min-height: 100vh;
+        box-sizing: border-box;
+        padding: 25px 20px 50px;
+        text-align: center;
+        color: white;
+        overflow-y: auto;
+
+        background:
+            radial-gradient(
+                circle at 20% 20%,
+                rgba(0,255,255,.18),
+                transparent 30%
+            ),
+            radial-gradient(
+                circle at 80% 30%,
+                rgba(255,0,180,.18),
+                transparent 30%
+            ),
+            linear-gradient(
+                135deg,
+                #11152d,
+                #251044,
+                #092c45
+            );
+    }
+
+    .extraHeader {
+        margin-bottom: 25px;
+    }
+
+    .extraHeader h1 {
+        font-size: 36px;
+        margin: 10px 0;
+        font-weight: 900;
+    }
+
+    .extraHeader p {
+        opacity: .8;
+    }
+
+    .screenCoins {
+        display: inline-block;
+        margin-top: 15px;
+        padding: 10px 22px;
+        border-radius: 30px;
+        background: rgba(0,0,0,.45);
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .itemGrid {
+        width: min(1100px, 100%);
+        margin: auto;
+        display: grid;
+        grid-template-columns:
+            repeat(auto-fit, minmax(190px, 1fr));
+        gap: 18px;
+    }
+
+    .shopItem {
+        padding: 22px;
+        border-radius: 22px;
+        background: rgba(255,255,255,.10);
+        border: 1px solid rgba(255,255,255,.18);
+        box-shadow:
+            0 10px 30px rgba(0,0,0,.3);
+    }
+
+    .shopItem.owned {
+        border-color: #53ff9b;
+    }
+
+    .shopIcon {
+        font-size: 55px;
+        margin-bottom: 10px;
+    }
+
+    .shopItem h3 {
+        margin: 8px 0;
+    }
+
+    .shopItem p {
+        opacity: .55;
+        font-size: 12px;
+    }
+
+    .shopPrice {
+        margin: 14px;
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    .shopItem button {
+        border: 0;
+        border-radius: 12px;
+        padding: 11px 22px;
+        font-weight: 900;
+        cursor: pointer;
+        background: #fff;
+        color: #111;
+    }
+
+    .shopItem button:not(:disabled):hover {
+        transform: scale(1.05);
+    }
+
+    .closetLayout {
+        width: min(1050px, 100%);
+        margin: auto;
+        display: grid;
+        grid-template-columns:
+            330px 1fr;
+        gap: 30px;
+        align-items: start;
+    }
+
+    .closetPreview {
+        padding: 20px;
+        border-radius: 25px;
+        background: rgba(255,255,255,.08);
+    }
+
+    #closetCanvas {
+        width: 300px;
+        max-width: 100%;
+        border-radius: 20px;
+        background:
+            radial-gradient(
+                circle,
+                #3d2b70,
+                #11152d
+            );
+    }
+
+    .equippedInfo {
+        margin-top: 12px;
+        font-weight: bold;
+        opacity: .8;
+    }
+
+    .closetContent {
+        text-align: left;
+    }
+
+    .closetContent h2 {
+        margin-top: 0;
+        margin-bottom: 12px;
+    }
+
+    .closetMemes,
+    .closetAccessories {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 25px;
+    }
+
+    .closetMeme,
+    .closetAccessory {
+        border: 0;
+        border-radius: 12px;
+        padding: 11px 15px;
+        cursor: pointer;
+        background: rgba(255,255,255,.12);
+        color: white;
+        font-weight: bold;
+    }
+
+    .closetMeme.selected,
+    .closetAccessory.equipped {
+        background: #00eaff;
+        color: #06101e;
+        box-shadow:
+            0 0 20px rgba(0,234,255,.5);
+    }
+
+    .closetMeme.locked,
+    .closetAccessory.locked {
+        opacity: .35;
+        cursor: not-allowed;
+    }
+
+    .missionsContainer {
+        width: min(1000px, 100%);
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .mission {
+        display: grid;
+        grid-template-columns:
+            70px 1fr 180px;
+        gap: 15px;
+        align-items: center;
+        text-align: left;
+        padding: 18px;
+        border-radius: 20px;
+        background: rgba(255,255,255,.09);
+        border: 1px solid rgba(255,255,255,.12);
+    }
+
+    .mission.completed {
+        border-color: #53ff9b;
+    }
+
+    .mission.claimed {
+        opacity: .55;
+    }
+
+    .missionIcon {
+        font-size: 42px;
+        text-align: center;
+    }
+
+    .missionInfo h3 {
+        margin: 0 0 5px;
+    }
+
+    .missionInfo p {
+        margin: 0 0 10px;
+        opacity: .7;
+    }
+
+    .progressBar {
+        width: 100%;
+        height: 9px;
+        background: rgba(0,0,0,.4);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progressFill {
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            #00eaff,
+            #62ff70
+        );
+    }
+
+    .missionReward {
+        text-align: center;
+    }
+
+    .rewardItem {
+        margin: 4px 0;
+        font-size: 13px;
+    }
+
+    .claimBtn {
+        margin-top: 8px;
+        padding: 10px 18px;
+        border: 0;
+        border-radius: 10px;
+        font-weight: 900;
+        cursor: pointer;
+        background: #62ff70;
+    }
+
+    .claimBtn:disabled {
+        opacity: .35;
+        cursor: not-allowed;
+    }
+
+    @media(max-width:700px) {
+
+        .closetLayout {
+            grid-template-columns: 1fr;
+        }
+
+        .closetContent {
+            text-align: center;
+        }
+
+        .closetMemes,
+        .closetAccessories {
+            justify-content: center;
+        }
+
+        .mission {
+            grid-template-columns: 50px 1fr;
+        }
+
+        .missionReward {
+            grid-column: 1 / -1;
+        }
+
+        .extraHeader h1 {
+            font-size: 28px;
+        }
+
+        .menuButtons {
+            flex-wrap: wrap;
+        }
+
+    }
+
+`;
+
+document.head.appendChild(
+    extraStyle
+);
+
+
+// ============================================================
 // CANVAS
 // ============================================================
 
-let W = window.innerWidth;
-let H = window.innerHeight;
+let W =
+    window.innerWidth;
+
+let H =
+    window.innerHeight;
 
 function resizeCanvas() {
 
-    W = window.innerWidth;
-    H = window.innerHeight;
+    W =
+        window.innerWidth;
 
-    canvas.width = W;
-    canvas.height = H;
+    H =
+        window.innerHeight;
+
+    canvas.width =
+        W;
+
+    canvas.height =
+        H;
 }
 
 resizeCanvas();
@@ -471,6 +1112,7 @@ window.addEventListener(
 // ============================================================
 
 let currentLevel = 1;
+
 let player = null;
 
 let pipes = [];
@@ -484,87 +1126,31 @@ let gameRunning = false;
 let gameFinished = false;
 
 let lastPipeTime = 0;
+
 let animationFrame = null;
 
 
 // ============================================================
-// MENU
+// MENU STATS
 // ============================================================
 
 function updateMenuStats() {
 
-    bestScoreText.textContent =
-        bestScore;
+    if (bestScoreText)
+        bestScoreText.textContent =
+            bestScore;
 
-    coinsText.textContent =
-        totalCoins;
+    if (coinsText)
+        coinsText.textContent =
+            totalCoins;
 }
 
 updateMenuStats();
 
 
 // ============================================================
-// LEVELS
+// WORLD ICON
 // ============================================================
-
-function createLevels() {
-
-    const container =
-        document.getElementById("levelContainer");
-
-    container.innerHTML = "";
-
-    worlds.forEach(
-        (world, index) => {
-
-            const levelNumber =
-                index + 1;
-
-            const button =
-                document.createElement("button");
-
-            button.className = "level";
-
-            if (
-                levelNumber >
-                unlockedLevel
-            ) {
-
-                button.classList.add("locked");
-
-                button.innerHTML = `
-                    <div style="font-size:42px">🔒</div>
-                    <div class="name">LOCKED</div>
-                `;
-
-                button.disabled = true;
-
-            } else {
-
-                button.innerHTML = `
-                    <div style="font-size:42px">
-                        ${worldIcon(world)}
-                    </div>
-
-                    <div style="font-size:22px">
-                        ${levelNumber}
-                    </div>
-
-                    <div class="name">
-                        ${world.name}
-                    </div>
-                `;
-
-                button.addEventListener(
-                    "click",
-                    () => startGame(levelNumber)
-                );
-            }
-
-            container.appendChild(button);
-        }
-    );
-}
 
 function worldIcon(world) {
 
@@ -589,6 +1175,87 @@ function worldIcon(world) {
     return "🚀";
 }
 
+
+// ============================================================
+// LEVEL SELECT
+// ============================================================
+
+function createLevels() {
+
+    const container =
+        document.getElementById(
+            "levelContainer"
+        );
+
+    if (!container)
+        return;
+
+    container.innerHTML = "";
+
+    worlds.forEach(
+        (world, index) => {
+
+            const level =
+                index + 1;
+
+            const button =
+                document.createElement(
+                    "button"
+                );
+
+            button.className =
+                "level";
+
+            if (level > unlockedLevel) {
+
+                button.classList.add(
+                    "locked"
+                );
+
+                button.disabled =
+                    true;
+
+                button.innerHTML = `
+                    <div style="font-size:42px">
+                        🔒
+                    </div>
+
+                    <div class="name">
+                        LOCKED
+                    </div>
+                `;
+
+            } else {
+
+                button.innerHTML = `
+
+                    <div style="font-size:42px">
+                        ${worldIcon(world)}
+                    </div>
+
+                    <div style="font-size:22px">
+                        ${level}
+                    </div>
+
+                    <div class="name">
+                        ${world.name}
+                    </div>
+                `;
+
+                button.addEventListener(
+                    "click",
+                    () =>
+                        startGame(level)
+                );
+            }
+
+            container.appendChild(
+                button
+            );
+        }
+    );
+}
+
 createLevels();
 
 
@@ -599,74 +1266,121 @@ createLevels();
 function hideAllScreens() {
 
     menu.classList.add("hidden");
-    levelsScreen.classList.add("hidden");
-    shopScreen.classList.add("hidden");
-    closetScreen.classList.add("hidden");
-    missionsScreen.classList.add("hidden");
-    game.classList.add("hidden");
+
+    levelsScreen.classList.add(
+        "hidden"
+    );
+
+    shopScreen.classList.add(
+        "hidden"
+    );
+
+    closetScreen.classList.add(
+        "hidden"
+    );
+
+    missionsScreen.classList.add(
+        "hidden"
+    );
+
+    game.classList.add(
+        "hidden"
+    );
 }
+
 
 function stopGame() {
 
     gameRunning = false;
 
-    cancelAnimationFrame(
-        animationFrame
-    );
+    if (animationFrame)
+        cancelAnimationFrame(
+            animationFrame
+        );
 }
+
 
 function showMenu() {
 
     stopGame();
+
     hideAllScreens();
 
-    menu.classList.remove("hidden");
+    menu.classList.remove(
+        "hidden"
+    );
 
-    gameOver.classList.add("hidden");
-    levelComplete.classList.add("hidden");
+    gameOver.classList.add(
+        "hidden"
+    );
+
+    levelComplete.classList.add(
+        "hidden"
+    );
 
     updateMenuStats();
 }
 
+
 function showLevels() {
 
     stopGame();
+
     hideAllScreens();
 
-    levelsScreen.classList.remove("hidden");
+    levelsScreen.classList.remove(
+        "hidden"
+    );
 
-    gameOver.classList.add("hidden");
-    levelComplete.classList.add("hidden");
+    gameOver.classList.add(
+        "hidden"
+    );
+
+    levelComplete.classList.add(
+        "hidden"
+    );
 
     createLevels();
 }
 
+
 function showShop() {
 
     stopGame();
+
     hideAllScreens();
 
-    shopScreen.classList.remove("hidden");
+    shopScreen.classList.remove(
+        "hidden"
+    );
 
     renderShop();
 }
 
+
 function showCloset() {
 
     stopGame();
+
     hideAllScreens();
 
-    closetScreen.classList.remove("hidden");
+    closetScreen.classList.remove(
+        "hidden"
+    );
 
     renderCloset();
 }
 
+
 function showMissions() {
 
     stopGame();
+
     hideAllScreens();
 
-    missionsScreen.classList.remove("hidden");
+    missionsScreen.classList.remove(
+        "hidden"
+    );
 
     renderMissions();
 }
@@ -678,12 +1392,20 @@ function showMissions() {
 
 playBtn.addEventListener(
     "click",
-    () => startGame(unlockedLevel)
+    () =>
+        startGame(
+            unlockedLevel
+        )
 );
 
 levelsBtn.addEventListener(
     "click",
     showLevels
+);
+
+backBtn.addEventListener(
+    "click",
+    showMenu
 );
 
 shopBtn.addEventListener(
@@ -699,11 +1421,6 @@ closetBtn.addEventListener(
 missionsBtn.addEventListener(
     "click",
     showMissions
-);
-
-backBtn.addEventListener(
-    "click",
-    showMenu
 );
 
 shopBackBtn.addEventListener(
@@ -733,7 +1450,26 @@ levelsBtn2.addEventListener(
 
 retryBtn.addEventListener(
     "click",
-    () => startGame(currentLevel)
+    () =>
+        startGame(
+            currentLevel
+        )
+);
+
+nextBtn.addEventListener(
+    "click",
+    () => {
+
+        if (
+            currentLevel <
+            unlockedLevel
+        ) {
+
+            startGame(
+                currentLevel + 1
+            );
+        }
+    }
 );
 
 
@@ -744,10 +1480,17 @@ retryBtn.addEventListener(
 function renderShop() {
 
     const container =
-        document.getElementById("shopContainer");
+        document.getElementById(
+            "shopContainer"
+        );
 
     const balance =
-        document.getElementById("shopCoins");
+        document.getElementById(
+            "shopCoins"
+        );
+
+    if (!container)
+        return;
 
     balance.textContent =
         totalCoins;
@@ -763,13 +1506,20 @@ function renderShop() {
                 );
 
             const div =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
             div.className =
                 "shopItem" +
-                (owned ? " owned" : "");
+                (
+                    owned
+                        ? " owned"
+                        : ""
+                );
 
             div.innerHTML = `
+
                 <div class="shopIcon">
                     ${item.icon}
                 </div>
@@ -784,28 +1534,43 @@ function renderShop() {
 
                 ${
                     owned
-                    ? `
-                        <button disabled>
-                            ✓ OWNED
-                        </button>
-                    `
-                    : `
-                        <div class="shopPrice">
-                            🪙 ${item.price}
-                        </div>
+                        ? `
+                            <button disabled>
+                                ✓ OWNED
+                            </button>
+                        `
+                        : `
+                            <div class="shopPrice">
+                                🪙 ${item.price}
+                            </div>
 
-                        <br>
-
-                        <button
-                            onclick="buyAccessory('${item.id}')"
-                        >
-                            BUY
-                        </button>
-                    `
+                            <button>
+                                BUY
+                            </button>
+                        `
                 }
+
             `;
 
-            container.appendChild(div);
+            if (!owned) {
+
+                const buyButton =
+                    div.querySelector(
+                        "button"
+                    );
+
+                buyButton.addEventListener(
+                    "click",
+                    () =>
+                        buyAccessory(
+                            item.id
+                        )
+                );
+            }
+
+            container.appendChild(
+                div
+            );
         }
     );
 }
@@ -819,8 +1584,8 @@ function buyAccessory(id) {
 
     const item =
         accessories.find(
-            accessory =>
-                accessory.id === id
+            x =>
+                x.id === id
         );
 
     if (!item)
@@ -861,10 +1626,11 @@ function buyAccessory(id) {
 
 
 // ============================================================
-// CLOSET
+// WARDROBE
 // ============================================================
 
 let selectedClosetMeme = 1;
+
 
 function renderCloset() {
 
@@ -878,12 +1644,18 @@ function renderCloset() {
             "closetAccessories"
         );
 
+    if (!memeContainer ||
+        !accessoryContainer)
+        return;
+
     memeContainer.innerHTML = "";
+
     accessoryContainer.innerHTML = "";
 
-    // -----------------------------
+
+    // --------------------------------------------------------
     // MEMES
-    // -----------------------------
+    // --------------------------------------------------------
 
     worlds.forEach(
         (world, index) => {
@@ -891,25 +1663,32 @@ function renderCloset() {
             const level =
                 index + 1;
 
-            const button =
-                document.createElement("button");
-
             const unlocked =
-                level <= unlockedLevel;
+                level <=
+                unlockedLevel;
+
+            const button =
+                document.createElement(
+                    "button"
+                );
 
             button.className =
                 "closetMeme";
 
             if (!unlocked)
-                button.classList.add("locked");
+                button.classList.add(
+                    "locked"
+                );
 
             if (
                 selectedClosetMeme ===
                 level
             )
-                button.classList.add("selected");
+                button.classList.add(
+                    "selected"
+                );
 
-            button.innerHTML =
+            button.textContent =
                 unlocked
                     ? `${worldIcon(world)} ${world.name}`
                     : `🔒 ${world.name}`;
@@ -935,23 +1714,42 @@ function renderCloset() {
     );
 
 
-    // -----------------------------
-    // ACCESSORIES
-    // -----------------------------
+    // --------------------------------------------------------
+    // NONE
+    // --------------------------------------------------------
 
-    const noneButton =
-        document.createElement("button");
+    const none =
+        document.createElement(
+            "button"
+        );
 
-    noneButton.className =
+    none.className =
         "closetAccessory";
 
-    noneButton.textContent =
-        "❌ NONE";
+    none.textContent =
+        "❌ UNEQUIP ALL";
 
-    accessoryContainer.appendChild(
-        noneButton
+    none.addEventListener(
+        "click",
+        () => {
+
+            equippedAccessories =
+                {};
+
+            saveData();
+
+            renderCloset();
+        }
     );
 
+    accessoryContainer.appendChild(
+        none
+    );
+
+
+    // --------------------------------------------------------
+    // ACCESSORIES
+    // --------------------------------------------------------
 
     accessories.forEach(
         item => {
@@ -962,17 +1760,22 @@ function renderCloset() {
                 );
 
             const button =
-                document.createElement("button");
+                document.createElement(
+                    "button"
+                );
 
             button.className =
                 "closetAccessory";
 
             if (!owned)
-                button.classList.add("locked");
+                button.classList.add(
+                    "locked"
+                );
 
             if (
-                equippedAccessories[item.type] ===
-                item.id
+                equippedAccessories[
+                    item.type
+                ] === item.id
             ) {
 
                 button.classList.add(
@@ -980,11 +1783,10 @@ function renderCloset() {
                 );
             }
 
-            button.innerHTML =
+            button.textContent =
                 owned
                     ? `${item.icon} ${item.name}`
                     : `🔒 ${item.name}`;
-
 
             if (owned) {
 
@@ -1006,7 +1808,8 @@ function renderCloset() {
 
                             equippedAccessories[
                                 item.type
-                            ] = item.id;
+                            ] =
+                                item.id;
                         }
 
                         saveData();
@@ -1021,6 +1824,7 @@ function renderCloset() {
             );
         }
     );
+
 
     drawClosetPreview();
 }
@@ -1041,25 +1845,61 @@ function drawClosetPreview() {
         return;
 
     const c =
-        closetCanvas.getContext("2d");
+        closetCanvas.getContext(
+            "2d"
+        );
+
+    const cw =
+        closetCanvas.width;
+
+    const ch =
+        closetCanvas.height;
 
     c.clearRect(
         0,
         0,
-        closetCanvas.width,
-        closetCanvas.height
+        cw,
+        ch
+    );
+
+    const gradient =
+        c.createLinearGradient(
+            0,
+            0,
+            0,
+            ch
+        );
+
+    gradient.addColorStop(
+        0,
+        "#30205f"
+    );
+
+    gradient.addColorStop(
+        1,
+        "#08152b"
+    );
+
+    c.fillStyle =
+        gradient;
+
+    c.fillRect(
+        0,
+        0,
+        cw,
+        ch
     );
 
     c.save();
 
     c.translate(
-        150,
-        150
+        cw / 2,
+        ch / 2 + 10
     );
 
     c.scale(
-        2.2,
-        2.2
+        2.1,
+        2.1
     );
 
     const world =
@@ -1067,23 +1907,10 @@ function drawClosetPreview() {
             selectedClosetMeme - 1
         ];
 
-    if (world.skin === "pepe")
-        drawPepe();
-
-    if (world.skin === "shib")
-        drawShib();
-
-    if (world.skin === "doge")
-        drawDoge();
-
-    if (world.skin === "troll")
-        drawTroll();
-
-    if (world.skin === "sixtyseven")
-        draw67();
-
-    if (world.skin === "wif")
-        drawWif();
+    drawSkin(
+        c,
+        world.skin
+    );
 
     drawAccessories(
         c,
@@ -1092,29 +1919,47 @@ function drawClosetPreview() {
 
     c.restore();
 
-    const equipped =
-        Object.keys(
-            equippedAccessories
-        );
 
     const info =
         document.getElementById(
             "equippedInfo"
         );
 
-    info.textContent =
-        equipped.length
-            ? equipped
+    if (!info)
+        return;
+
+    const equipped =
+        Object.values(
+            equippedAccessories
+        );
+
+    if (!equipped.length) {
+
+        info.textContent =
+            "NO ACCESSORIES";
+
+    } else {
+
+        info.textContent =
+            equipped
                 .map(
-                    type =>
-                        accessories.find(
-                            item =>
-                                item.id ===
-                                equippedAccessories[type]
-                        )?.name
+                    id => {
+
+                        const item =
+                            accessories.find(
+                                x =>
+                                    x.id ===
+                                    id
+                            );
+
+                        return item
+                            ? item.name
+                            : "";
+                    }
                 )
-                .join(" • ")
-            : "NO ACCESSORIES";
+                .filter(Boolean)
+                .join(" • ");
+    }
 }
 
 
@@ -1122,57 +1967,51 @@ function drawClosetPreview() {
 // MISSIONS
 // ============================================================
 
-function getMissionProgress(mission) {
+function getMissionProgress(
+    mission
+) {
 
     if (
         mission.id ===
-        "coins25"
-    )
-        return totalCoinsCollected;
-
-    if (
+            "coins25" ||
         mission.id ===
-        "coins100"
-    )
-        return totalCoinsCollected;
-
-    if (
+            "coins100" ||
         mission.id ===
-        "coins250"
-    )
+            "coins250"
+    ) {
+
         return totalCoinsCollected;
+    }
 
     if (
         mission.id ===
         "pepe"
-    )
-        return unlockedLevel >= 2
+    ) {
+
+        return completedWorlds >= 1
             ? 1
             : 0;
+    }
 
     if (
         mission.id ===
-        "score20"
-    )
+            "score20" ||
+        mission.id ===
+            "score50"
+    ) {
+
         return highestScore;
+    }
 
     if (
         mission.id ===
-        "score50"
-    )
-        return highestScore;
-
-    if (
+            "worlds3" ||
         mission.id ===
-        "worlds3"
-    )
+            "allworlds"
+    ) {
+
         return completedWorlds;
-
-    if (
-        mission.id ===
-        "allworlds"
-    )
-        return completedWorlds;
+    }
 
     return 0;
 }
@@ -1185,6 +2024,9 @@ function renderMissions() {
             "missionsContainer"
         );
 
+    if (!container)
+        return;
+
     container.innerHTML = "";
 
     missions.forEach(
@@ -1192,17 +2034,17 @@ function renderMissions() {
 
             const progress =
                 Math.min(
-                    getMissionProgress(mission),
+                    getMissionProgress(
+                        mission
+                    ),
                     mission.target
                 );
 
             const percentage =
-                Math.min(
+                (
                     progress /
-                        mission.target *
-                        100,
-                    100
-                );
+                    mission.target
+                ) * 100;
 
             const claimed =
                 claimedMissions.includes(
@@ -1213,26 +2055,32 @@ function renderMissions() {
                 progress >=
                 mission.target;
 
-            const rewardItem =
+            const reward =
                 mission.rewardItem
                     ? accessories.find(
-                        item =>
-                            item.id ===
+                        x =>
+                            x.id ===
                             mission.rewardItem
                     )
                     : null;
 
             const div =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
             div.className =
                 "mission" +
-                (completed
-                    ? " completed"
-                    : "") +
-                (claimed
-                    ? " claimed"
-                    : "");
+                (
+                    completed
+                        ? " completed"
+                        : ""
+                ) +
+                (
+                    claimed
+                        ? " claimed"
+                        : ""
+                );
 
             div.innerHTML = `
 
@@ -1254,13 +2102,16 @@ function renderMissions() {
 
                         <div
                             class="progressFill"
-                            style="width:${percentage}%"
+                            style="
+                                width:${percentage}%
+                            "
                         ></div>
 
                     </div>
 
                     <small>
-                        ${progress} / ${mission.target}
+                        ${progress} /
+                        ${mission.target}
                     </small>
 
                 </div>
@@ -1268,18 +2119,19 @@ function renderMissions() {
                 <div class="missionReward">
 
                     <div class="rewardItem">
-                        🪙 +${mission.rewardCoins}
+                        🪙 +
+                        ${mission.rewardCoins}
                     </div>
 
                     ${
-                        rewardItem
-                        ? `
-                            <div class="rewardItem">
-                                ${rewardItem.icon}
-                                ${rewardItem.name}
-                            </div>
-                        `
-                        : ""
+                        reward
+                            ? `
+                                <div class="rewardItem">
+                                    ${reward.icon}
+                                    ${reward.name}
+                                </div>
+                            `
+                            : ""
                     }
 
                     <button
@@ -1290,7 +2142,6 @@ function renderMissions() {
                                 ? "disabled"
                                 : ""
                         }
-                        onclick="claimMission('${mission.id}')"
                     >
                         ${
                             claimed
@@ -1301,6 +2152,19 @@ function renderMissions() {
 
                 </div>
             `;
+
+            const claim =
+                div.querySelector(
+                    ".claimBtn"
+                );
+
+            claim.addEventListener(
+                "click",
+                () =>
+                    claimMission(
+                        mission.id
+                    )
+            );
 
             container.appendChild(
                 div
@@ -1317,21 +2181,25 @@ function renderMissions() {
 function claimMission(id) {
 
     if (
-        claimedMissions.includes(id)
+        claimedMissions.includes(
+            id
+        )
     )
         return;
 
     const mission =
         missions.find(
-            item =>
-                item.id === id
+            x =>
+                x.id === id
         );
 
     if (!mission)
         return;
 
     if (
-        getMissionProgress(mission) <
+        getMissionProgress(
+            mission
+        ) <
         mission.target
     )
         return;
@@ -1367,7 +2235,9 @@ function claimMission(id) {
 // START GAME
 // ============================================================
 
-function startGame(levelNumber) {
+function startGame(
+    levelNumber
+) {
 
     if (
         levelNumber >
@@ -1378,6 +2248,9 @@ function startGame(levelNumber) {
             unlockedLevel;
     }
 
+    if (levelNumber < 1)
+        levelNumber = 1;
+
     currentLevel =
         levelNumber;
 
@@ -1387,13 +2260,17 @@ function startGame(levelNumber) {
         ];
 
     score = 0;
+
     collectedCoins = 0;
 
     pipes = [];
+
     coins = [];
+
     particles = [];
 
     gameRunning = true;
+
     gameFinished = false;
 
     hideAllScreens();
@@ -1414,28 +2291,34 @@ function startGame(levelNumber) {
         currentLevel;
 
     scoreText.textContent =
-        score;
+        "0";
 
     gameCoinsText.textContent =
-        collectedCoins;
+        "0";
 
     resizeCanvas();
 
     player = {
 
-        x: W * 0.25,
+        x:
+            W * 0.25,
 
-        y: H * 0.5,
+        y:
+            H * 0.5,
 
-        velocity: 0,
+        velocity:
+            0,
 
-        size: 58,
+        size:
+            54,
 
-        rotation: 0
+        rotation:
+            0
     };
 
     lastPipeTime =
-        performance.now() - 900;
+        performance.now() -
+        1000;
 
     cancelAnimationFrame(
         animationFrame
@@ -1480,29 +2363,43 @@ document.addEventListener(
     event => {
 
         if (
-            event.code === "Space" ||
-            event.code === "ArrowUp"
+            event.code ===
+                "Space" ||
+            event.code ===
+                "ArrowUp"
         ) {
 
-            event.preventDefault();
+            if (gameRunning) {
 
-            jump();
+                event.preventDefault();
+
+                jump();
+            }
         }
     }
 );
 
+
 canvas.addEventListener(
     "mousedown",
-    jump
+    event => {
+
+        if (gameRunning)
+            jump();
+    }
 );
+
 
 canvas.addEventListener(
     "touchstart",
     event => {
 
-        event.preventDefault();
+        if (gameRunning) {
 
-        jump();
+            event.preventDefault();
+
+            jump();
+        }
 
     },
     {
@@ -1512,7 +2409,7 @@ canvas.addEventListener(
 
 
 // ============================================================
-// PIPE
+// CREATE PIPE
 // ============================================================
 
 function createPipe() {
@@ -1525,43 +2422,54 @@ function createPipe() {
     const minTop = 70;
 
     const maxTop =
-        H -
-        world.gap -
-        120;
+        Math.max(
+            minTop + 20,
+            H -
+            world.gap -
+            120
+        );
 
     const top =
         Math.random() *
-        (maxTop - minTop) +
+        (
+            maxTop -
+            minTop
+        ) +
         minTop;
 
     pipes.push({
 
-        x: W + 80,
+        x:
+            W + 80,
 
-        width: 82,
+        width:
+            82,
 
-        top: top,
+        top:
+            top,
 
         bottom:
             top +
             world.gap,
 
-        passed: false
+        passed:
+            false
     });
 
     coins.push({
 
         x:
-            W +
-            121,
+            W + 121,
 
         y:
             top +
             world.gap / 2,
 
-        radius: 14,
+        radius:
+            14,
 
-        collected: false
+        collected:
+            false
     });
 }
 
@@ -1580,6 +2488,11 @@ function update() {
             currentLevel - 1
         ];
 
+
+    // --------------------------------------------------------
+    // PLAYER
+    // --------------------------------------------------------
+
     player.velocity +=
         world.gravity;
 
@@ -1591,10 +2504,15 @@ function update() {
             -0.45,
             Math.min(
                 0.8,
-                player.velocity * 0.055
+                player.velocity *
+                0.055
             )
         );
 
+
+    // --------------------------------------------------------
+    // NEW PIPE
+    // --------------------------------------------------------
 
     if (
         performance.now() -
@@ -1608,6 +2526,10 @@ function update() {
             performance.now();
     }
 
+
+    // --------------------------------------------------------
+    // PIPES
+    // --------------------------------------------------------
 
     pipes.forEach(
         pipe => {
@@ -1637,19 +2559,16 @@ function update() {
 
                     highestScore =
                         score;
-
-                    localStorage.setItem(
-                        "memeFlyHighestScore",
-                        highestScore
-                    );
                 }
 
-                createParticles(
-                    player.x,
-                    player.y,
-                    world.accent,
-                    12
-                );
+                if (
+                    score >
+                    bestScore
+                ) {
+
+                    bestScore =
+                        score;
+                }
 
                 if (
                     score >=
@@ -1658,10 +2577,21 @@ function update() {
 
                     completeLevel();
                 }
+
+                createParticles(
+                    player.x,
+                    player.y,
+                    world.accent,
+                    12
+                );
             }
         }
     );
 
+
+    // --------------------------------------------------------
+    // COINS
+    // --------------------------------------------------------
 
     coins.forEach(
         coin => {
@@ -1694,26 +2624,22 @@ function update() {
                 coinsText.textContent =
                     totalCoins;
 
-                localStorage.setItem(
-                    "memeFlyCoins",
-                    totalCoins
-                );
-
-                localStorage.setItem(
-                    "memeFlyTotalCollected",
-                    totalCoinsCollected
-                );
-
                 createParticles(
                     coin.x,
                     coin.y,
                     "#ffe600",
                     18
                 );
+
+                saveData();
             }
         }
     );
 
+
+    // --------------------------------------------------------
+    // PARTICLES
+    // --------------------------------------------------------
 
     particles.forEach(
         particle => {
@@ -1739,6 +2665,10 @@ function update() {
         );
 
 
+    // --------------------------------------------------------
+    // CLEAN
+    // --------------------------------------------------------
+
     pipes =
         pipes.filter(
             pipe =>
@@ -1756,6 +2686,10 @@ function update() {
         );
 
 
+    // --------------------------------------------------------
+    // BOUNDARY
+    // --------------------------------------------------------
+
     if (
         player.y -
             player.size / 2 <
@@ -1770,6 +2704,10 @@ function update() {
         return;
     }
 
+
+    // --------------------------------------------------------
+    // PIPE COLLISION
+    // --------------------------------------------------------
 
     for (
         const pipe of pipes
@@ -1848,26 +2786,34 @@ function createParticles(
 
         particles.push({
 
-            x: x,
+            x:
+                x,
 
-            y: y,
+            y:
+                y,
 
             vx:
-                (Math.random() - 0.5) *
-                5,
+                (
+                    Math.random() -
+                    0.5
+                ) * 5,
 
             vy:
-                (Math.random() - 0.5) *
-                5,
+                (
+                    Math.random() -
+                    0.5
+                ) * 5,
 
             size:
                 Math.random() *
-                    5 +
+                5 +
                 2,
 
-            color: color,
+            color:
+                color,
 
-            life: 1
+            life:
+                1
         });
     }
 }
@@ -1954,6 +2900,7 @@ function drawPepeBackground() {
 
     ctx.fill();
 
+
     for (
         let i = 0;
         i < 12;
@@ -1985,6 +2932,7 @@ function drawPepeBackground() {
 
         ctx.fill();
     }
+
 
     ctx.fillStyle =
         "rgba(20,120,120,0.25)";
@@ -2019,6 +2967,7 @@ function drawShibBackground() {
 
     ctx.fill();
 
+
     for (
         let i = 0;
         i < 12;
@@ -2052,7 +3001,7 @@ function drawShibBackground() {
                 20;
 
             y <
-                H - 15;
+            H - 15;
 
             y += 30
         ) {
@@ -2073,6 +3022,7 @@ function drawShibBackground() {
         }
     }
 
+
     ctx.fillStyle =
         "#ffd45b";
 
@@ -2088,7 +3038,7 @@ function drawShibBackground() {
             i * 170 + 60,
             90 +
                 (i % 2) *
-                    80,
+                80,
             13,
             0,
             Math.PI * 2
@@ -2125,8 +3075,7 @@ function drawDogeBackground() {
 
         ctx.globalAlpha =
             0.4 +
-            (i % 5) *
-                0.1;
+            (i % 5) * 0.1;
 
         ctx.fillRect(
             x,
@@ -2235,10 +3184,10 @@ function drawTrollBackground() {
                 : "rgba(0,255,180,0.3)";
 
         ctx.fillRect(
-            Math.random() * W,
-            Math.random() * H,
+            (i * 157) % W,
+            (i * 93) % H,
             30 +
-                Math.random() * 80,
+                (i * 17) % 80,
             3
         );
     }
@@ -2447,7 +3396,8 @@ function drawPipes() {
                     pipe.bottom
             );
 
-            ctx.globalAlpha = 1;
+            ctx.globalAlpha =
+                1;
         }
     );
 }
@@ -2476,9 +3426,9 @@ function drawCoins() {
                 0.9 +
                 Math.sin(
                     performance.now() *
-                        0.008
+                    0.008
                 ) *
-                    0.1;
+                0.1;
 
             ctx.scale(
                 pulse,
@@ -2506,7 +3456,8 @@ function drawCoins() {
 
             ctx.fill();
 
-            ctx.shadowBlur = 0;
+            ctx.shadowBlur =
+                0;
 
             ctx.strokeStyle =
                 "#8a6500";
@@ -2564,23 +3515,15 @@ function drawPlayer() {
             currentLevel - 1
         ];
 
-    if (world.skin === "pepe")
-        drawPepe();
+    drawAccessoriesBehind(
+        ctx,
+        equippedAccessories
+    );
 
-    if (world.skin === "shib")
-        drawShib();
-
-    if (world.skin === "doge")
-        drawDoge();
-
-    if (world.skin === "troll")
-        drawTroll();
-
-    if (world.skin === "sixtyseven")
-        draw67();
-
-    if (world.skin === "wif")
-        drawWif();
+    drawSkin(
+        ctx,
+        world.skin
+    );
 
     drawAccessories(
         ctx,
@@ -2592,18 +3535,65 @@ function drawPlayer() {
 
 
 // ============================================================
-// ACCESSORIES
+// DRAW SKIN
 // ============================================================
 
-function drawAccessories(
+function drawSkin(
     drawingContext,
+    skin
+) {
+
+    const oldCtx =
+        window.__drawingContext;
+
+    window.__drawingContext =
+        drawingContext;
+
+
+    if (skin === "pepe")
+        drawPepe();
+
+    if (skin === "shib")
+        drawShib();
+
+    if (skin === "doge")
+        drawDoge();
+
+    if (skin === "troll")
+        drawTroll();
+
+    if (skin === "sixtyseven")
+        draw67();
+
+    if (skin === "wif")
+        drawWif();
+
+
+    window.__drawingContext =
+        oldCtx;
+}
+
+
+function getDrawContext() {
+
+    return window.__drawingContext ||
+        ctx;
+}
+
+
+// ============================================================
+// ACCESSORIES BEHIND
+// ============================================================
+
+function drawAccessoriesBehind(
+    c,
     equipped
 ) {
 
-    const c =
-        drawingContext;
+    // --------------------------------------------------------
+    // DIAMOND AURA
+    // --------------------------------------------------------
 
-    // AURA
     if (
         equipped.aura ===
         "diamondAura"
@@ -2612,10 +3602,12 @@ function drawAccessories(
         c.save();
 
         c.shadowBlur = 25;
-        c.shadowColor = "#ffffff";
+
+        c.shadowColor =
+            "#ffffff";
 
         c.strokeStyle =
-            "rgba(120,240,255,0.8)";
+            "rgba(120,240,255,.8)";
 
         c.lineWidth = 5;
 
@@ -2635,7 +3627,210 @@ function drawAccessories(
     }
 
 
+    // --------------------------------------------------------
+    // FIRE TRAIL
+    // --------------------------------------------------------
+
+    if (
+        equipped.trail ===
+        "fire"
+    ) {
+
+        c.save();
+
+        for (
+            let i = 0;
+            i < 7;
+            i++
+        ) {
+
+            c.fillStyle =
+                i % 2
+                    ? "#ffcc00"
+                    : "#ff3b00";
+
+            c.beginPath();
+
+            c.arc(
+                -30 -
+                    i * 7,
+                Math.sin(
+                    performance.now() *
+                    0.01 +
+                    i
+                ) * 8,
+                5 +
+                    Math.random() *
+                    4,
+                0,
+                Math.PI * 2
+            );
+
+            c.fill();
+        }
+
+        c.restore();
+    }
+
+
+    // --------------------------------------------------------
+    // LIGHTNING
+    // --------------------------------------------------------
+
+    if (
+        equipped.trail ===
+        "lightning"
+    ) {
+
+        c.save();
+
+        c.strokeStyle =
+            "#00eaff";
+
+        c.lineWidth = 3;
+
+        for (
+            let i = 0;
+            i < 4;
+            i++
+        ) {
+
+            c.beginPath();
+
+            c.moveTo(
+                -28 -
+                    i * 10,
+                0
+            );
+
+            c.lineTo(
+                -40 -
+                    i * 10,
+                10
+            );
+
+            c.lineTo(
+                -32 -
+                    i * 10,
+                14
+            );
+
+            c.lineTo(
+                -45 -
+                    i * 10,
+                25
+            );
+
+            c.stroke();
+        }
+
+        c.restore();
+    }
+
+
+    // --------------------------------------------------------
+    // RAINBOW
+    // --------------------------------------------------------
+
+    if (
+        equipped.trail ===
+        "rainbow"
+    ) {
+
+        const colors = [
+            "#ff0000",
+            "#ff8800",
+            "#ffff00",
+            "#00ff66",
+            "#00ccff",
+            "#7744ff",
+            "#ff00cc"
+        ];
+
+        c.save();
+
+        colors.forEach(
+            (color, i) => {
+
+                c.fillStyle =
+                    color;
+
+                c.beginPath();
+
+                c.arc(
+                    -30 -
+                        i * 6,
+                    Math.sin(
+                        performance.now() *
+                        0.01 +
+                        i
+                    ) * 10,
+                    4,
+                    0,
+                    Math.PI * 2
+                );
+
+                c.fill();
+            }
+        );
+
+        c.restore();
+    }
+
+
+    // --------------------------------------------------------
+    // MONEY
+    // --------------------------------------------------------
+
+    if (
+        equipped.trail ===
+        "money"
+    ) {
+
+        c.save();
+
+        c.fillStyle =
+            "#5cff75";
+
+        c.font =
+            "bold 17px Arial";
+
+        c.fillText(
+            "$",
+            -35,
+            -2
+        );
+
+        c.fillText(
+            "$",
+            -52,
+            15
+        );
+
+        c.fillText(
+            "$",
+            -68,
+            -8
+        );
+
+        c.restore();
+    }
+}
+
+
+// ============================================================
+// ACCESSORIES OVER PLAYER
+// ============================================================
+
+function drawAccessories(
+    c,
+    equipped
+) {
+
+    // --------------------------------------------------------
     // HEAD
+    // --------------------------------------------------------
+
     if (
         equipped.head ===
         "crown"
@@ -2648,7 +3843,7 @@ function drawAccessories(
 
         c.moveTo(
             -20,
-            -28
+            -27
         );
 
         c.lineTo(
@@ -2678,7 +3873,7 @@ function drawAccessories(
 
         c.lineTo(
             20,
-            -28
+            -27
         );
 
         c.closePath();
@@ -2728,14 +3923,25 @@ function drawAccessories(
     }
 
 
+    // --------------------------------------------------------
     // FACE
+    // --------------------------------------------------------
+
     if (
         equipped.face ===
-        "sunglasses"
+            "sunglasses" ||
+        equipped.face ===
+            "goldGlasses"
     ) {
 
+        const gold =
+            equipped.face ===
+            "goldGlasses";
+
         c.fillStyle =
-            "#111";
+            gold
+                ? "#ffd700"
+                : "#111";
 
         c.fillRect(
             -22,
@@ -2759,7 +3965,9 @@ function drawAccessories(
         );
 
         c.strokeStyle =
-            "#777";
+            gold
+                ? "#fff4a3"
+                : "#777";
 
         c.lineWidth = 2;
 
@@ -2779,57 +3987,10 @@ function drawAccessories(
     }
 
 
-    if (
-        equipped.face ===
-        "goldGlasses"
-    ) {
+    // --------------------------------------------------------
+    // CHAIN
+    // --------------------------------------------------------
 
-        c.fillStyle =
-            "#ffd700";
-
-        c.fillRect(
-            -22,
-            -15,
-            18,
-            9
-        );
-
-        c.fillRect(
-            4,
-            -15,
-            18,
-            9
-        );
-
-        c.fillRect(
-            -4,
-            -12,
-            8,
-            4
-        );
-
-        c.strokeStyle =
-            "#fff4a3";
-
-        c.lineWidth = 2;
-
-        c.strokeRect(
-            -22,
-            -15,
-            18,
-            9
-        );
-
-        c.strokeRect(
-            4,
-            -15,
-            18,
-            9
-        );
-    }
-
-
-    // BODY
     if (
         equipped.body ===
         "chain"
@@ -2876,205 +4037,24 @@ function drawAccessories(
 
         c.fill();
     }
-
-
-    // TRAILS
-    if (
-        equipped.trail
-    ) {
-
-        drawTrail(
-            c,
-            equipped.trail
-        );
-    }
 }
 
 
 // ============================================================
-// TRAILS
-// ============================================================
-
-function drawTrail(
-    c,
-    trail
-) {
-
-    const time =
-        performance.now() *
-        0.01;
-
-    c.save();
-
-    c.globalAlpha =
-        0.75;
-
-    if (
-        trail ===
-        "fire"
-    ) {
-
-        c.fillStyle =
-            "#ff5a00";
-
-        for (
-            let i = 0;
-            i < 5;
-            i++
-        ) {
-
-            c.beginPath();
-
-            c.arc(
-                -28 - i * 8,
-                8 +
-                    Math.sin(
-                        time + i
-                    ) *
-                    6,
-                5 +
-                    Math.random() *
-                        4,
-                0,
-                Math.PI * 2
-            );
-
-            c.fill();
-        }
-    }
-
-
-    if (
-        trail ===
-        "lightning"
-    ) {
-
-        c.strokeStyle =
-            "#00eaff";
-
-        c.lineWidth = 3;
-
-        for (
-            let i = 0;
-            i < 4;
-            i++
-        ) {
-
-            c.beginPath();
-
-            c.moveTo(
-                -25 - i * 9,
-                0
-            );
-
-            c.lineTo(
-                -38 - i * 9,
-                8
-            );
-
-            c.lineTo(
-                -30 - i * 9,
-                12
-            );
-
-            c.lineTo(
-                -42 - i * 9,
-                23
-            );
-
-            c.stroke();
-        }
-    }
-
-
-    if (
-        trail ===
-        "rainbow"
-    ) {
-
-        const colors = [
-            "#ff0000",
-            "#ff8800",
-            "#ffff00",
-            "#00ff66",
-            "#00ccff",
-            "#7744ff",
-            "#ff00cc"
-        ];
-
-        colors.forEach(
-            (color, i) => {
-
-                c.fillStyle =
-                    color;
-
-                c.beginPath();
-
-                c.arc(
-                    -30 -
-                        i * 6,
-                    Math.sin(
-                        time +
-                            i
-                    ) *
-                        10,
-                    4,
-                    0,
-                    Math.PI * 2
-                );
-
-                c.fill();
-            }
-        );
-    }
-
-
-    if (
-        trail ===
-        "money"
-    ) {
-
-        c.fillStyle =
-            "#5cff75";
-
-        c.font =
-            "bold 16px Arial";
-
-        c.fillText(
-            "$",
-            -35,
-            -2
-        );
-
-        c.fillText(
-            "$",
-            -52,
-            15
-        );
-
-        c.fillText(
-            "$",
-            -68,
-            -8
-        );
-    }
-
-    c.restore();
-}
-
-
-// ============================================================
-// PEPE
+// SKIN: PEPE
 // ============================================================
 
 function drawPepe() {
 
-    ctx.fillStyle =
+    const c =
+        getDrawContext();
+
+    c.fillStyle =
         "#62b44b";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.ellipse(
+    c.ellipse(
         0,
         5,
         27,
@@ -3084,14 +4064,14 @@ function drawPepe() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#76c957";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.arc(
+    c.arc(
         0,
         -5,
         25,
@@ -3099,14 +4079,14 @@ function drawPepe() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#dff5d8";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.arc(
+    c.arc(
         -9,
         -14,
         9,
@@ -3114,7 +4094,7 @@ function drawPepe() {
         Math.PI * 2
     );
 
-    ctx.arc(
+    c.arc(
         9,
         -14,
         9,
@@ -3122,14 +4102,14 @@ function drawPepe() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#111";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.arc(
+    c.arc(
         -9,
         -14,
         4,
@@ -3137,7 +4117,7 @@ function drawPepe() {
         Math.PI * 2
     );
 
-    ctx.arc(
+    c.arc(
         9,
         -14,
         4,
@@ -3145,14 +4125,14 @@ function drawPepe() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#301c18";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.ellipse(
+    c.ellipse(
         0,
         8,
         16,
@@ -3162,14 +4142,14 @@ function drawPepe() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#e87979";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.ellipse(
+    c.ellipse(
         0,
         11,
         8,
@@ -3179,14 +4159,14 @@ function drawPepe() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#4f9e40";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.ellipse(
+    c.ellipse(
         -23,
         12,
         11,
@@ -3196,22 +4176,25 @@ function drawPepe() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 }
 
 
 // ============================================================
-// SHIB
+// SKIN: SHIB
 // ============================================================
 
 function drawShib() {
 
-    ctx.fillStyle =
+    const c =
+        getDrawContext();
+
+    c.fillStyle =
         "#d77b32";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.ellipse(
+    c.ellipse(
         0,
         6,
         27,
@@ -3221,14 +4204,14 @@ function drawShib() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#e28a3b";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.arc(
+    c.arc(
         0,
         -5,
         25,
@@ -3236,55 +4219,55 @@ function drawShib() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#d36f2e";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.moveTo(
+    c.moveTo(
         -20,
         -18
     );
 
-    ctx.lineTo(
+    c.lineTo(
         -22,
         -38
     );
 
-    ctx.lineTo(
+    c.lineTo(
         -8,
         -25
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.moveTo(
+    c.moveTo(
         20,
         -18
     );
 
-    ctx.lineTo(
+    c.lineTo(
         22,
         -38
     );
 
-    ctx.lineTo(
+    c.lineTo(
         8,
         -25
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#fff0d2";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.ellipse(
+    c.ellipse(
         0,
         5,
         16,
@@ -3294,14 +4277,14 @@ function drawShib() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#111";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.arc(
+    c.arc(
         -9,
         -10,
         3.5,
@@ -3309,7 +4292,7 @@ function drawShib() {
         Math.PI * 2
     );
 
-    ctx.arc(
+    c.arc(
         9,
         -10,
         3.5,
@@ -3317,11 +4300,11 @@ function drawShib() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.arc(
+    c.arc(
         0,
         3,
         5,
@@ -3329,16 +4312,16 @@ function drawShib() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.strokeStyle =
+    c.strokeStyle =
         "#111";
 
-    ctx.lineWidth = 2;
+    c.lineWidth = 2;
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.arc(
+    c.arc(
         0,
         5,
         7,
@@ -3346,14 +4329,14 @@ function drawShib() {
         Math.PI
     );
 
-    ctx.stroke();
+    c.stroke();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#b96329";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.ellipse(
+    c.ellipse(
         -23,
         13,
         11,
@@ -3363,32 +4346,35 @@ function drawShib() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 }
 
 
 // ============================================================
-// DOGE
+// SKIN: DOGE
 // ============================================================
 
 function drawDoge() {
 
-    ctx.fillStyle =
+    const c =
+        getDrawContext();
+
+    c.fillStyle =
         "#d49b55";
 
-    ctx.fillRect(
+    c.fillRect(
         -9,
         15,
         18,
         15
     );
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#dba45b";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.ellipse(
+    c.ellipse(
         0,
         -2,
         25,
@@ -3398,55 +4384,55 @@ function drawDoge() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#b8793c";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.moveTo(
+    c.moveTo(
         -18,
         -18
     );
 
-    ctx.lineTo(
+    c.lineTo(
         -29,
         -35
     );
 
-    ctx.lineTo(
+    c.lineTo(
         -8,
         -27
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.moveTo(
+    c.moveTo(
         18,
         -18
     );
 
-    ctx.lineTo(
+    c.lineTo(
         29,
         -35
     );
 
-    ctx.lineTo(
+    c.lineTo(
         8,
         -27
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#f0c47b";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.ellipse(
+    c.ellipse(
         0,
         8,
         16,
@@ -3456,14 +4442,14 @@ function drawDoge() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#111";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.arc(
+    c.arc(
         -9,
         -8,
         4,
@@ -3471,7 +4457,7 @@ function drawDoge() {
         Math.PI * 2
     );
 
-    ctx.arc(
+    c.arc(
         9,
         -8,
         4,
@@ -3479,11 +4465,11 @@ function drawDoge() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.arc(
+    c.arc(
         0,
         4,
         5,
@@ -3491,31 +4477,31 @@ function drawDoge() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.strokeStyle =
+    c.strokeStyle =
         "#111";
 
-    ctx.lineWidth = 2;
+    c.lineWidth = 2;
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.moveTo(
+    c.moveTo(
         0,
         8
     );
 
-    ctx.lineTo(
+    c.lineTo(
         0,
         13
     );
 
-    ctx.stroke();
+    c.stroke();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#e44a38";
 
-    ctx.fillRect(
+    c.fillRect(
         -18,
         17,
         36,
@@ -3525,17 +4511,20 @@ function drawDoge() {
 
 
 // ============================================================
-// TROLL
+// SKIN: TROLL
 // ============================================================
 
 function drawTroll() {
 
-    ctx.fillStyle =
+    const c =
+        getDrawContext();
+
+    c.fillStyle =
         "#3dbb62";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.ellipse(
+    c.ellipse(
         0,
         8,
         25,
@@ -3545,14 +4534,14 @@ function drawTroll() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#52d873";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.ellipse(
+    c.ellipse(
         0,
         -5,
         26,
@@ -3562,14 +4551,14 @@ function drawTroll() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#35a853";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.moveTo(
+    c.moveTo(
         -24,
         -18
     );
@@ -3580,28 +4569,28 @@ function drawTroll() {
         i += 8
     ) {
 
-        ctx.lineTo(
+        c.lineTo(
             i,
             -38 -
-                Math.abs(
-                    i % 16
-                )
+            Math.abs(
+                i % 16
+            )
         );
     }
 
-    ctx.lineTo(
+    c.lineTo(
         24,
         -15
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "white";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.ellipse(
+    c.ellipse(
         -9,
         -7,
         8,
@@ -3611,7 +4600,7 @@ function drawTroll() {
         Math.PI * 2
     );
 
-    ctx.ellipse(
+    c.ellipse(
         9,
         -7,
         8,
@@ -3621,14 +4610,14 @@ function drawTroll() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#111";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.arc(
+    c.arc(
         -9,
         -5,
         4,
@@ -3636,7 +4625,7 @@ function drawTroll() {
         Math.PI * 2
     );
 
-    ctx.arc(
+    c.arc(
         9,
         -5,
         4,
@@ -3644,14 +4633,14 @@ function drawTroll() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#2f8e4c";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.arc(
+    c.arc(
         0,
         3,
         6,
@@ -3659,14 +4648,14 @@ function drawTroll() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#25152b";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.ellipse(
+    c.ellipse(
         0,
         13,
         18,
@@ -3676,19 +4665,19 @@ function drawTroll() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "white";
 
-    ctx.fillRect(
+    c.fillRect(
         -10,
         9,
         7,
         5
     );
 
-    ctx.fillRect(
+    c.fillRect(
         3,
         9,
         7,
@@ -3698,17 +4687,20 @@ function drawTroll() {
 
 
 // ============================================================
-// 67
+// SKIN: 67
 // ============================================================
 
 function draw67() {
 
-    ctx.fillStyle =
+    const c =
+        getDrawContext();
+
+    c.fillStyle =
         "#16b8d4";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.roundRect(
+    c.roundRect(
         -25,
         -24,
         50,
@@ -3716,14 +4708,14 @@ function draw67() {
         14
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#071b35";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.roundRect(
+    c.roundRect(
         -19,
         -15,
         38,
@@ -3731,97 +4723,100 @@ function draw67() {
         9
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#00eaff";
 
-    ctx.fillRect(
+    c.fillRect(
         -13,
         -8,
         8,
         5
     );
 
-    ctx.fillRect(
+    c.fillRect(
         5,
         -8,
         8,
         5
     );
 
-    ctx.fillRect(
+    c.fillRect(
         -10,
         4,
         20,
         4
     );
 
-    ctx.strokeStyle =
+    c.strokeStyle =
         "#00eaff";
 
-    ctx.lineWidth = 2;
+    c.lineWidth = 2;
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.moveTo(
+    c.moveTo(
         -18,
         -24
     );
 
-    ctx.lineTo(
+    c.lineTo(
         -10,
         -32
     );
 
-    ctx.lineTo(
+    c.lineTo(
         10,
         -32
     );
 
-    ctx.lineTo(
+    c.lineTo(
         18,
         -24
     );
 
-    ctx.stroke();
+    c.stroke();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#087da8";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.moveTo(
+    c.moveTo(
         -20,
         5
     );
 
-    ctx.lineTo(
+    c.lineTo(
         -39,
         15
     );
 
-    ctx.lineTo(
+    c.lineTo(
         -20,
         20
     );
 
-    ctx.fill();
+    c.fill();
 }
 
 
 // ============================================================
-// WIF
+// SKIN: WIF
 // ============================================================
 
 function drawWif() {
 
-    ctx.fillStyle =
+    const c =
+        getDrawContext();
+
+    c.fillStyle =
         "#d89b55";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.ellipse(
+    c.ellipse(
         0,
         8,
         26,
@@ -3831,14 +4826,14 @@ function drawWif() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#e5aa61";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.ellipse(
+    c.ellipse(
         0,
         -5,
         25,
@@ -3848,89 +4843,89 @@ function drawWif() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#c98242";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.moveTo(
+    c.moveTo(
         -17,
         -19
     );
 
-    ctx.lineTo(
+    c.lineTo(
         -26,
         -34
     );
 
-    ctx.lineTo(
+    c.lineTo(
         -6,
         -27
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.moveTo(
+    c.moveTo(
         17,
         -19
     );
 
-    ctx.lineTo(
+    c.lineTo(
         26,
         -34
     );
 
-    ctx.lineTo(
+    c.lineTo(
         6,
         -27
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#ead9bd";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.moveTo(
+    c.moveTo(
         -24,
         -25
     );
 
-    ctx.lineTo(
+    c.lineTo(
         0,
         -38
     );
 
-    ctx.lineTo(
+    c.lineTo(
         24,
         -25
     );
 
-    ctx.lineTo(
+    c.lineTo(
         20,
         -18
     );
 
-    ctx.lineTo(
+    c.lineTo(
         -20,
         -18
     );
 
-    ctx.closePath();
+    c.closePath();
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#d2bfa3";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.ellipse(
+    c.ellipse(
         0,
         -18,
         29,
@@ -3940,14 +4935,14 @@ function drawWif() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#111";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.arc(
+    c.arc(
         -9,
         -5,
         4,
@@ -3955,7 +4950,7 @@ function drawWif() {
         Math.PI * 2
     );
 
-    ctx.arc(
+    c.arc(
         9,
         -5,
         4,
@@ -3963,14 +4958,14 @@ function drawWif() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#f0c27b";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.ellipse(
+    c.ellipse(
         0,
         7,
         14,
@@ -3980,14 +4975,14 @@ function drawWif() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#111";
 
-    ctx.beginPath();
+    c.beginPath();
 
-    ctx.arc(
+    c.arc(
         0,
         5,
         4,
@@ -3995,12 +4990,12 @@ function drawWif() {
         Math.PI * 2
     );
 
-    ctx.fill();
+    c.fill();
 
-    ctx.fillStyle =
+    c.fillStyle =
         "#ffcb55";
 
-    ctx.fillRect(
+    c.fillRect(
         -18,
         17,
         36,
@@ -4122,7 +5117,7 @@ function drawProgress() {
     const progress =
         Math.min(
             score /
-                world.target,
+            world.target,
             1
         );
 
@@ -4133,7 +5128,7 @@ function drawProgress() {
         x,
         y,
         width *
-            progress,
+        progress,
         height
     );
 }
@@ -4167,6 +5162,9 @@ function draw() {
 
 function gameLoop() {
 
+    if (!gameRunning)
+        return;
+
     update();
 
     draw();
@@ -4190,9 +5188,12 @@ function endGame() {
     if (gameFinished)
         return;
 
-    gameFinished = true;
+    gameFinished =
+        true;
 
-    gameRunning = false;
+    gameRunning =
+        false;
+
 
     if (
         score >
@@ -4201,12 +5202,8 @@ function endGame() {
 
         bestScore =
             score;
-
-        localStorage.setItem(
-            "memeFlyBest",
-            bestScore
-        );
     }
+
 
     if (
         score >
@@ -4215,12 +5212,10 @@ function endGame() {
 
         highestScore =
             score;
-
-        localStorage.setItem(
-            "memeFlyHighestScore",
-            highestScore
-        );
     }
+
+
+    saveData();
 
     finalScore.textContent =
         score;
@@ -4242,30 +5237,53 @@ function completeLevel() {
     if (gameFinished)
         return;
 
-    gameFinished = true;
+    gameFinished =
+        true;
 
-    gameRunning = false;
+    gameRunning =
+        false;
 
     completeScore.textContent =
         score;
 
 
-    // Só conta uma vez cada mundo
-    if (
-        currentLevel >=
-        unlockedLevel
-    ) {
+    // --------------------------------------------------------
+    // COUNT WORLD ONLY ONCE
+    // --------------------------------------------------------
+
+    const previousCompleted =
+        Number(
+            localStorage.getItem(
+                "memeFlyCompletedLevel_" +
+                currentLevel
+            )
+        ) || 0;
+
+    if (!previousCompleted) {
+
+        localStorage.setItem(
+            "memeFlyCompletedLevel_" +
+            currentLevel,
+            "1"
+        );
 
         completedWorlds++;
 
-        localStorage.setItem(
-            "memeFlyCompletedWorlds",
-            completedWorlds
-        );
+        if (
+            completedWorlds >
+            worlds.length
+        ) {
+
+            completedWorlds =
+                worlds.length;
+        }
     }
 
 
-    // Desbloquear próximo mundo
+    // --------------------------------------------------------
+    // UNLOCK NEXT WORLD
+    // --------------------------------------------------------
+
     if (
         currentLevel ===
         unlockedLevel &&
@@ -4275,13 +5293,12 @@ function completeLevel() {
 
         unlockedLevel =
             currentLevel + 1;
-
-        localStorage.setItem(
-            "memeFlyUnlocked",
-            unlockedLevel
-        );
     }
 
+
+    // --------------------------------------------------------
+    // BEST
+    // --------------------------------------------------------
 
     if (
         score >
@@ -4290,11 +5307,6 @@ function completeLevel() {
 
         bestScore =
             score;
-
-        localStorage.setItem(
-            "memeFlyBest",
-            bestScore
-        );
     }
 
 
@@ -4305,13 +5317,12 @@ function completeLevel() {
 
         highestScore =
             score;
-
-        localStorage.setItem(
-            "memeFlyHighestScore",
-            highestScore
-        );
     }
 
+
+    // --------------------------------------------------------
+    // NEXT BUTTON
+    // --------------------------------------------------------
 
     if (
         currentLevel <
@@ -4341,29 +5352,7 @@ function completeLevel() {
 
 
 // ============================================================
-// NEXT WORLD
-// ============================================================
-
-nextBtn.addEventListener(
-    "click",
-    () => {
-
-        if (
-            currentLevel <
-            unlockedLevel
-        ) {
-
-            startGame(
-                currentLevel + 1
-            );
-        }
-    }
-);
-
-
-// ============================================================
 // START
 // ============================================================
 
 showMenu();
-```
